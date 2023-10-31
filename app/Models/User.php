@@ -28,6 +28,12 @@ class User extends Authenticatable
         'two_factor_code'
     ];
 
+
+    public function materials()
+    {
+        return $this->hasMany(Material::class);
+    }
+    
     /**
      * The attributes that should be hidden for serialization.
      *
