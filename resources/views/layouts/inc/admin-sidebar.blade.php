@@ -3,14 +3,23 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link" href="{{ url('/admin/home') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
+                            </a>
+                            <a class="nav-link" href="{{ url('/instructor/home') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Home
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
                             <a class="nav-link" href="{{ url('admin/users') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
                                 Users
+                             </a>
+
+                             <a class="nav-link" href="{{ url('/categories/index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
+                                Categories
                              </a>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>

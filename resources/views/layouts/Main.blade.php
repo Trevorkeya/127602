@@ -11,7 +11,6 @@
 
     <!-- <link href= "{{ asset ('assets/css/styles.css') }}" rel="stylesheet"> -->
     <link href= "{{ asset ('assets/css/styles.css') }}" rel="stylesheet">
-    
     <link href= "{{ asset ('assets/css/styles2.css') }}" rel="stylesheet">
     <!-- Linking Google font link for icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
@@ -83,15 +82,11 @@
         </nav>
 
     <aside class="sidebar">
-      <!-- <div class="logo">
-        <img src="images/logo.jpg" alt="logo">
-        <h2>CodingNepal</h2>
-      </div> -->
       <ul class="links">
         <h4>Main Menu</h4>
         <li>
           <span class="material-symbols-outlined">dashboard</span>
-          <a href="#">Dashboard</a>
+          <a href="{{ url('/admin/home') }}">Dashboard</a>
         </li>
         <li>
           <span class="material-symbols-outlined">show_chart</span>
@@ -104,20 +99,20 @@
         <hr>
         <h4>Advanced</h4>
         <li>
-          <span class="material-symbols-outlined">person</span>
+          <span class="material-symbols-outlined">Library_books</span>
           <a href="{{ url('/materials') }}">Library</a>
         </li>
         <li>
-          <span class="material-symbols-outlined">group</span>
-          <a href="#">Developer </a>
+        <span class="material-symbols-outlined">edit_note</span>
+          <a href="/courses">Courses</a>
         </li>
         <li>
-          <span class="material-symbols-outlined">ambient_screen</span>
-          <a href="#">Magic Build</a>
+          <span class="material-symbols-outlined">quiz</span>
+          <a href="#">Assessments</a>
         </li>
         <li>
           <span class="material-symbols-outlined">pacemaker</span>
-          <a href="#">Theme Maker</a>
+          <a href="/courses/create">Create Course</a>
         </li>
         <li>
           <span class="material-symbols-outlined">monitoring</span>

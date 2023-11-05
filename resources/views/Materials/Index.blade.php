@@ -3,12 +3,39 @@
 @section('title', 'E-Learning Library')
 
 @section('content')
+    <style>
+        .leftside{
+            width: 210px; 
+            top: 50%; 
+            right: 0;
+            position: fixed;
+            transform: translateY(-50%); 
+            background-color: #f5f5f5;
+            padding: 10px;
+            float: right;
+        }
+    </style>
+    <div class="leftside">
+        <h4>Category</h4>
+        <ul>
+            @foreach($categories as $category)
+                <li>
+                    <a class="btn btn-sm" href="{{ route('materials.index', ['category' => $category->id]) }}">
+                        {{ $category->name }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+
 <div style="margin-left: 20px;">
     <div class="container">
         <div class="card-header" style="margin-top: 20px;">
             <h3>Library
-                <a href="{{ url('/materials/create')}}" class="btn btn-primary btn-sm float-end">
-                    Add Resource
+                <a href="{{ url('/materials/create')}}" class="float-end">
+                <span class="material-symbols-outlined">
+                    add_circle
+                </span>
                 </a>
             </h3>
         </div>
@@ -44,17 +71,20 @@
             <div class="material-card">
                 <h3 class="title">{{ $material->title }}</h3>
                 <p>Type: {{ $material->type }}</p>
+               
                 @if($material->type === 'pdf')
-                    <a class="btn btn-primary btn-sm float-end" href="#" onclick="viewPDF('{{ asset($material->file_path) }}')">View</a>
+                    <a class="btn btn-sm float-end" href="#" onclick="viewPDF('{{ asset($material->file_path) }}')"><span class="material-symbols-outlined">fullscreen</span></a>
                 @else
-                    <a class="btn btn-primary btn-sm float-end" href="{{ asset($material->file_path) }}" target="_blank">Download</a>
+                    <a class="btn btn-sm float-end" href="{{ asset($material->file_path) }}" target="_blank"><span class="material-symbols-outlined">download</span></a>
                 @endif
-                <div></div>
+                <div></div> 
+                @if(auth()->check() && auth()->user()->id === $material->user->id)
                 <form action="{{ route('materials.destroy', $material->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button class="btn btn-danger btn-sm float-end" style="margin-right: 10px;" type="submit" onclick="return confirm('Are you sure you want to delete?')">Delete</button>
+                    <button class="btn btn-sm float-end" style="margin-right: 10px;" type="submit" onclick="return confirm('Are you sure you want to delete?')"><span class="material-symbols-outlined">delete</span></button>
                 </form>
+                @endif
             </div>
         @if(($key + 1) % 3 == 0 || $key + 1 == count($materials))
             </div>
@@ -62,4 +92,8 @@
         @endforeach
     </div>
 </div>
+
+
+
+
 @endsection

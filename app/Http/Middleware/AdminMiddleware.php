@@ -23,7 +23,7 @@ class AdminMiddleware
             {
                 return $next($request);
             } 
-            else //0=User
+            else 
             { 
                 return redirect()->back()->with('status','Access Denied! As you are not an Admin');
             }

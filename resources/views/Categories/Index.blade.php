@@ -12,8 +12,8 @@
 
         <div class="card">
             <div class="card-header">
-                <h3>Users
-                    <a href="{{ url('admin/categories/create')}}" class="btn btn-primary btn-sm float-end">
+                <h3>Categories
+                    <a href="{{ url('/categories/create')}}" class="btn btn-primary btn-sm float-end">
                         Add Category
                     </a>
                 </h3>
@@ -35,7 +35,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5">No Users Available</td>
+                                <td colspan="5">No Categories Available</td>
                             </tr>
                             @endforelse
                         </tbody>

@@ -14,5 +14,8 @@ class Category extends Model
         'name',
     ];
 
-    
+    public function materials()
+    {
+        return $this->hasMany(Material::class);
+    }
 }

@@ -3,42 +3,57 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Material;
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        
         $materials = Material::all(); // Fetch all materials
-        return view('Materials.Index', ['materials' => $materials]);
+        $categoryId = $request->input('category');
+
+        $materials = Material::when($categoryId, function ($query) use ($categoryId) {
+            return $query->where('category_id', $categoryId);
+        })->get();
+
+        $categories = Category::all();
+
+        return view('Materials.Index', [
+            'materials' => $materials,
+            'categories' => $categories,
+        ]);
     }
 
     public function create()
     {
-        return view('Materials.Create');
+        $categories = Category::all();
+        return view('Materials.Create', ['categories' => $categories]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required',
-            'file' => 'required|mimes:pdf,doc,docx,ppt,pptx,mp4', // Specify allowed file types
-            // 'category' => 'required',
+            'file' => 'required|mimes:pdf,doc,docx,ppt,pptx,mp4', 
+            'category' => 'required',
         ]);
 
         $file = $request->file('file');
         $fileName = $file->getClientOriginalName(); // Get the original file name
         $filePath = $file->store('materials'); // Store the file in the materials directory
         $fileExtension = $file->getClientOriginalExtension();
+        
 
 
         Material::create([
             'title' => $request->title,
             'file_path' => $filePath,
             'type' => $file->getClientOriginalExtension(), // Get file extension
-            // 'user_id' => auth()->id(), // Assign the currently logged-in user's ID
-            // 'category_id' => $request->category,
+            'user_id' => auth()->id(), // Assign the currently logged-in user's ID
+            'category_id' => $request->category,
         ]);
 
         return redirect()->route('materials.index')->with('success', 'Material uploaded successfully');
@@ -54,12 +69,12 @@ class MaterialController extends Controller
 
     public function download($file)
    {
-    $path = storage_path('app/materials/' . $file); // Assuming your files are stored in the storage directory
+    $path = storage_path('app/materials/' . $file); 
 
     if (file_exists($path)) {
         return response()->download($path);
     } else {
-        // Handle file not found scenario
+        
         return response()->json(['error' => 'File not found.'], 404);
     }
    }

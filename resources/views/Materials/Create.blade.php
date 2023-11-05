@@ -44,9 +44,13 @@
         @csrf
         <input type="text" name="title" placeholder="Title">
         <input type="file" name="file">
-        <!-- <select name="category">
-            <option value="">Select Category</option>
-        </select> -->
+        <select name="category">
+          <option value="">Select Category</option>
+          @foreach($categories as $category)
+            <option value="{{ $category->id }}">{{ $category->name }}</option>
+          @endforeach
+        </select>
+ 
         <button class="upload" type="submit">Upload</button>
     </form>
 </div>

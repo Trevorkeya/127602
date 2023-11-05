@@ -10,11 +10,18 @@ class Material extends Model
     protected $fillable = [
         'title',
         'file_path',
-        'type' ];
+        'type',
+        'user_id',
+        'category_id' ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id'); 
     }
 
 }
