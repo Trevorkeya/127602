@@ -92,19 +92,24 @@
                 <a href="{{ route('topics.addMaterials', ['course' => $course->id, 'topic' => $topic->id]) }}" class="float-end">
                     <span class="material-symbols-outlined">add_circle</span>
                 </a>
+
+                <a href="{{ route('quizzes.create', ['course' => $course->id, 'topic' => $topic->id]) }}" class="float-end">
+                            <span class="material-symbols-outlined">new_window</span>
+                            
+                        </a>
                     <ul>
                         @forelse ($topic->materials as $material)
                             <li>
                               <div class="course-m">
-                                {{ $material->title }}.
-                                {{ $material->type }}
                                 @if($material->type === 'pdf')
-                                    <a class="btn btn-sm float-end" href="#" onclick="viewPDF('{{ asset($material->file_path) }}')">
-                                        <span class="material-symbols-outlined">fullscreen</span>
+                                    <a class="" href="#" onclick="viewPDF('{{ asset($material->file_path) }}')">
+                                    {{ $material->title }}.
+                                {{ $material->type }}
                                     </a>
                                 @else
-                                    <a class="btn btn-sm float-end" href="{{ asset($material->file_path) }}" target="_blank">
-                                        <span class="material-symbols-outlined">download</span>
+                                    <a class="" href="{{ asset($material->file_path) }}" target="_blank">
+                                    {{ $material->title }}.
+                                {{ $material->type }}
                                     </a>
                                 @endif
                                 </div>
@@ -113,7 +118,11 @@
                             <li>No materials added for this topic</li>
                         @endforelse
                     </ul>
-                  
+                    <ul>
+                        @foreach($quizzes as $quiz)
+                            <li><a href="{{ route('quizzes.show', $quiz->id) }}">{{ $quiz->name }}</a></li>
+                        @endforeach
+                    </ul>                  
                 </div>
             </div>
           </div>

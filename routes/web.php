@@ -34,7 +34,26 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
   
     Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'adminHome'])->name('admin.home');
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    Route::get('/admin/courses',[App\Http\Controllers\Main\CourseController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/courses', [App\Http\Controllers\Main\CourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/create', [App\Http\Controllers\Main\CourseController::class, 'create'])->name('courses.create');
+    Route::post('/courses', [App\Http\Controllers\Main\CourseController::class, 'store'])->name('courses.store');
+    Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course}/edit', [App\Http\Controllers\Main\CourseController::class, 'edit'])->name('courses.edit');
+    Route::put('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'destroy'])->name('courses.destroy');
+
    
+    Route::get('/admin/materials', [App\Http\Controllers\Admin\MaterialController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('materials/{file}', [App\Http\Controllers\Admin\MaterialController::class, 'download'])->name('materials.download');
+    Route::get('/materials', [App\Http\Controllers\Admin\MaterialController::class, 'index'])->name('materials.index');
+    Route::get('/materials/create', [App\Http\Controllers\Admin\MaterialController::class, 'create'])->name('materials.create');
+    Route::post('/materials', [App\Http\Controllers\Admin\MaterialController::class, 'store'])->name('materials.store');
+    Route::delete('/materials/{material}', [App\Http\Controllers\Admin\MaterialController::class, 'destroy'])->name('materials.destroy');
+    Route::get('materials/{file}', [App\Http\Controllers\Admin\MaterialController::class, 'download'])->name('materials.download');
+
+
     Route::prefix('admin')->group(function (){
        //Create user Routes
        Route::controller(App\Http\Controllers\Admin\UserController::class)->group(function(){
@@ -44,6 +63,9 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
             Route::get('/users/{user_id}','edit');
             Route::put('users/{user_id}','update');
             Route::get('users/destroy/{user_id}','destroy');
+            Route::get('/students','showStudents');
+            Route::get('/instructors','showInstructors');
+
       });
     });
 });
@@ -72,11 +94,11 @@ Route::middleware(['auth', 'user-access:admin|instructor'])->group(function () {
     
 });
 
-Route::get('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'show'])->name('2fa.verify');
-Route::post('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'verify']);
+    Route::get('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'show'])->name('2fa.verify');
+    Route::post('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'verify']);
 
-Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'adminHome'])->name('admin.home');
-
+    Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'adminHome'])->name('admin.home');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/instructor/home', [App\Http\Controllers\HomeController::class, 'instructorHome'])->name('instructor.home');
 
     // Add resources route
@@ -109,3 +131,18 @@ Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'adminHom
     Route::delete('courses/{course}/topics/{topic}/destroy', [App\Http\Controllers\Main\TopicController::class,'destroy'])->name('topics.destroy');
     Route::get('courses/{course}/topics/{topic}/add-materials', [App\Http\Controllers\Main\TopicController::class, 'createMaterials'])->name('topics.addMaterials');
     Route::post('courses/{course}/topics/{topic}/store-materials', [App\Http\Controllers\Main\TopicController::class, 'storeMaterials'])->name('topics.storeMaterials');
+
+    //Student Profile routes
+    Route::get('/student/profile', [App\Http\Controllers\Profiles\StudentProfileController::class, 'index'])->name('student.profile.index');
+    Route::get('/student/{id}/edit', [App\Http\Controllers\Profiles\StudentProfileController::class, 'edit'])->name('student.profile.edit');
+    Route::put('/student/profile/{id}/update', [App\Http\Controllers\Profiles\StudentProfileController::class, 'update'])->name('student.profile.update');
+
+    //Quiz routes
+    Route::get('quizzes/create/{course}/{topic}', [App\Http\Controllers\Quiz\QuizController::class, 'create'])->name('quizzes.create');
+    Route::post('quizzes', [App\Http\Controllers\Quiz\QuizController::class, 'store'])->name('quizzes.store');
+    Route::get('quizzes/{quiz}', [App\Http\Controllers\Quiz\QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('quizzes/{quiz}/addQuestions', [App\Http\Controllers\Quiz\QuestionController::class, 'create'])->name('questions.create');
+    Route::post('quizzes/{quiz}/storeQuestions', [App\Http\Controllers\Quiz\QuestionController::class, 'store'])->name('questions.store');
+    Route::post('quizzes/{quiz}/finish', [App\Http\Controllers\Quiz\QuizController::class, 'finish'])->name('quizzes.finish');
+
+    

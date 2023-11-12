@@ -9,10 +9,9 @@ use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
-    public function index(Request $request)
-    {
+    public function index(Request $request){
         
-        $materials = Material::all(); // Fetch all materials
+        $materials = Material::all(); 
         $categoryId = $request->input('category');
 
         $materials = Material::when($categoryId, function ($query) use ($categoryId) {
@@ -27,14 +26,14 @@ class MaterialController extends Controller
         ]);
     }
 
-    public function create()
-    {
+    public function create(){
+
         $categories = Category::all();
         return view('Materials.Create', ['categories' => $categories]);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
+
         $request->validate([
             'title' => 'required',
             'file' => 'required|mimes:pdf,doc,docx,ppt,pptx,mp4', 
@@ -59,16 +58,16 @@ class MaterialController extends Controller
         return redirect()->route('materials.index')->with('success', 'Material uploaded successfully');
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id){
+
         $material = Material::findOrFail($id);
         $material->delete();
 
-        return redirect()->route('materials.index')->with('success', 'Material deleted successfully');
+        return redirect()->back()->with('success', 'Material deleted successfully');
     }
 
-    public function download($file)
-   {
+    public function download($file){
+
     $path = storage_path('app/materials/' . $file); 
 
     if (file_exists($path)) {
@@ -78,5 +77,13 @@ class MaterialController extends Controller
         return response()->json(['error' => 'File not found.'], 404);
     }
    }
+
+   public function dashboard(){
+
+    $materials = Material::all(); // Retrieve all materials
+
+    return view('Admin.Materials.Index', ['materials' => $materials]);
+   }
+
 
 }

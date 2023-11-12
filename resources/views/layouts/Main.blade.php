@@ -112,7 +112,7 @@
         </li>
         <li>
           <span class="material-symbols-outlined">pacemaker</span>
-          <a href="/courses/create">Create Course</a>
+          <a href="/student/profile">Profile</a>
         </li>
         <li>
           <span class="material-symbols-outlined">monitoring</span>
