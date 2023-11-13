@@ -33,15 +33,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Material::class);
     }
+    
     public function student()
     {
         return $this->hasOne(Student::class);
     }
+
     public function instructor()
     {
         return $this->hasOne(Instructor::class);
     }
-    
+
+    public function quizResults()
+    {
+        return $this->hasMany(QuizResult::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

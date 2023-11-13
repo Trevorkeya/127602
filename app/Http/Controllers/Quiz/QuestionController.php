@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Quiz;
 
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
+use App\Models\Question;
+use App\Models\Answer;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
@@ -14,37 +16,33 @@ class QuestionController extends Controller
         return view('Quiz.addQuestions', compact('quiz'));
     }
 
-    public function store(Request $request, $quizId){
-
+    public function store(Request $request)
+    {
+        // Validate the form data
         $request->validate([
-            'questions' => 'required|array',
-            'questions.*' => 'required|string',
-            'answers' => 'required|array',
-            'correctAnswers' => 'required|array',
+            'quiz_id' => 'required|exists:quizzes,id',
+            'question' => 'required|string',
+            'answers.*.answer' => 'required|string', 
         ]);
 
-        $quiz = Quiz::find($quizId);
+        // Store the question
+        $question = Question::create([
+            'quiz_id' => $request->input('quiz_id'),
+            'question' => $request->input('question'),
+        ]);
 
-        foreach ($request->input('questions') as $index => $questionText) {
-            $question = $quiz->questions()->create([
-                'question' => $questionText,
+        // Store the answers
+        foreach ($request->input('answers') as $answerData) {
+            Answer::create([
+                'question_id' => $question->id,
+                'answer' => $answerData['answer'],
+                
             ]);
-        
-            if (
-                isset($request->input('answers')[$index]) &&
-                isset($request->input('correctAnswers')[$index])
-            ) {
-                foreach ($request->input('answers')[$index] as $answerIndex => $answerText) {
-                    $question->answers()->create([
-                        'answer' => $answerText,
-                        'is_correct' => $answerIndex == $request->input('correctAnswers')[$index],
-                    ]);
-                }
-            }
         }
 
-        return redirect()->route('quizzes.show', $quizId);
+        return back();
     }
+
 
     
 }

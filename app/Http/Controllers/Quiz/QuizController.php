@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Quiz;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\Models\Quiz;
 use App\Models\Topic;
 use App\Models\Course;
+use App\Models\QuizResult;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -27,41 +29,47 @@ class QuizController extends Controller
 
         $quiz = Quiz::create($request->all());
 
-        return redirect()->route('questions.create', $quiz->id);
+        return redirect()->route('quizzes.show', $quiz->id);
     }
 
-    public function show($id){
-        $quiz = Quiz::with('questions.answers')->find($id);
+    public function show(Quiz $quiz){
+
+        $quiz->load('questions.answers');
+
         return view('Quiz.Show', compact('quiz'));
     }
 
-    public function finish(Request $request, $id){
-        $quiz = Quiz::with('questions.answers')->find($id);
+    public function finish(Request $request, $quizId)
+    {
+        // Get the selected answers from the form
+        $selectedAnswers = $request->input('answers');
 
-        // Validate if all questions have been answered
-        $request->validate([
-            'answers.*' => 'required',
+        // Get the correct answers from the database
+        $correctAnswers = DB::table('answers')
+            ->whereIn('id', $selectedAnswers)
+            ->where('is_correct', true)
+            ->pluck('id');
+
+        // Calculate the user's score
+        $score = count($correctAnswers);
+
+        // Save the score to the database
+        QuizResult::create([
+            'user_id' => auth()->id(),
+            'quiz_id' => $quizId,
+            'score' => $score,
         ]);
 
-            // Initialize variables for score calculation
-            $totalQuestions = $quiz->questions->count();
-            $correctAnswers = 0;
-
-            // Check each question's correct answer
-            foreach ($quiz->questions as $question) {
-            $userAnswer = $request->input('answers.' . $question->id);
-
-            // Check if the user's answer is correct
-            if ($question->answers->where('id', $userAnswer)->first()->is_correct) {
-                $correctAnswers++;
-            }
-        }
-
-        // Calculate the score
-        $score = ($correctAnswers / $totalQuestions) * 100;
-
-        // Additional logic if needed (e.g., storing the user's answers)
-
-        return view('quizzes.finish', compact('quiz', 'score', 'totalQuestions'));
+        // Redirect to a result page or do any other action
+        return redirect()->route('quizzes.result', ['quizId' => $quizId, 'score' => $score]);
     }
+
+    public function result(Request $request, $quizId, $score)
+    {
+        $quiz = Quiz::findOrFail($quizId);
+        $totalQuestions = $quiz->questions->count();
+
+        return view('Quiz.Results', compact('quizId', 'score', 'quiz', 'totalQuestions'));
+    }
+
 }

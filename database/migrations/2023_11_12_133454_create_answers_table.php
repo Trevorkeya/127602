@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('question_id');
+            $table->unsignedBigInteger('question_id')->onUpdate('cascade')->onDelete('cascade');
             $table->string('answer');
             $table->boolean('is_correct')->default(false);
             $table->timestamps();

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Main;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\Quiz;
+
 
 class CourseController extends Controller
 {
@@ -60,7 +62,8 @@ class CourseController extends Controller
     {
         $course = Course::findOrFail($id);
         $course = Course::with('topics.materials')->find($id);
-        return view('Courses.show', compact('course'));
+        $quizzes = Quiz::all();
+        return view('Courses.show', compact('course','quizzes'));
     }
 
     public function destroy($id)

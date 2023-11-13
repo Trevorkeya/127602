@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('topic_id');
-            $table->unsignedBigInteger('course_id');
+            $table->unsignedBigInteger('topic_id')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('course_id')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('status', ['active', 'deactivated']);
             $table->timestamps();
 
