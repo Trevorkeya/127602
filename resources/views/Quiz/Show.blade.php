@@ -4,7 +4,97 @@
 
 @section('content')
 
+<!-- Add this to your existing styles or create a new CSS file -->
+
+<style>
+    .containers {
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        color: #007bff;
+    }
+
+    p {
+        color: #6c757d;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    fieldset {
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    legend {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .form-check-input {
+        margin-right: 8px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .modal-content {
+        border-radius: 8px;
+    }
+
+    .modal-header {
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .modal-title {
+        margin: 0;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+</style>
+
 <div class="container mt-4">
+<div class="containers mt-4">
     @if ($errors->any())
         <ul class="alert alert-danger">
             @foreach ($errors->all() as $error)
@@ -80,6 +170,7 @@
             </div>
         </div>
     </div>
+ </div>
  </div>
  <script>
     let answerIndex = 1;

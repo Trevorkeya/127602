@@ -1,6 +1,6 @@
 @extends('layouts.Main')
 
-@section('title', 'Profile')
+@section('title', 'Edit Profile')
 
 @section('content')
 
@@ -18,28 +18,44 @@
             @endforeach
         </ul>
         @endif
-           </br>
+
         <div class="row">
             <div class="card shadow">
-                  </br>
                 <div class="card-header bg-success">
                     Profile
                 </div>
                 <div class="card-body">
-                        <form action="{{route('student.profile.update', $student->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ url('/profile/update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            @method('PUT')
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label>Phone number</label>
-                                        <input type="text" name= "phone" value="{{ Auth::user()->student->phone_number ?? ''}}" class="form-control"/>
+                                        <label>Username</label>
+                                        <input type="text" name="username" value="{{ Auth::user()->name}}" class="form-control"/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label>Date of Birth</label>
-                                        <input type="text" name="dateofbirth" value="{{ Auth::user()->student->date_of_birth ?? ''}}" class="form-control"/>
+                                        <label>Email Address</label>
+                                        <input type="text"readonly value="{{ Auth::user()->email}}" class="form-control"/>
+                                    </div>
+                                </div>
+
+                                {{-- Render these fields only for students --}}
+                                @if(Auth::user()->type == 'user')
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label>Admission Number</label>
+                                            <input type="text" readonly value="{{ Auth::user()->student->admission_number ?? '' }}" class="form-control"/>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>Phone number</label>
+                                        <input type="text" name="phone" value="{{ Auth::user()->profile->phone ?? ''}}" class="form-control"/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

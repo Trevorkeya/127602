@@ -24,7 +24,7 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.234/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
@@ -115,7 +115,7 @@
         </li>
         <li>
           <span class="material-symbols-outlined">pacemaker</span>
-          <a href="/student/profile">Profile</a>
+          <a href="{{ route('profile.show') }}">Profile</a>
         </li>
         <li>
           <span class="material-symbols-outlined">monitoring</span>
@@ -134,10 +134,6 @@
         <li>
           <span class="material-symbols-outlined">settings</span>
           <a href="#">Settings</a>
-        </li>
-        <li class="logout-link">
-          <span class="material-symbols-outlined">logout</span>
-          <a href="#">Logout</a>
         </li>
       </ul>
     </aside>

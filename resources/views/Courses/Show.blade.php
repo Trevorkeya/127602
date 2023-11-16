@@ -135,30 +135,28 @@
                             </div>
                         </div>
                     </div>
-                </div>           
-                    <ul>
-                        @forelse ($topic->materials as $material)
-                            <li>
-                              <div class="course-m">
+                </div>   
+                <!-- Quiz Modal -->        
+                <ul>
+                    @forelse ($topic->materials as $material)
+                        <li>
+                            <div class="course-m">
                                 @if($material->type === 'pdf')
                                     <a class="" href="#" onclick="viewPDF('{{ asset($material->file_path) }}')">
-                                    {{ $material->title }}.
-                                {{ $material->type }}
+                                        {{ $material->title }}. {{ $material->type }}
                                     </a>
                                 @else
                                     <a class="" href="{{ asset($material->file_path) }}" target="_blank">
-                                    {{ $material->title }}.
-                                {{ $material->type }}
+                                        {{ $material->title }}. {{ $material->type }}
                                     </a>
                                 @endif
-                                </div>
-                            </li>
+                            </div>
+                        </li>
                         @empty
                             <li>No materials added for this topic</li>
-                        @endforelse
-                    </ul>
-                    <ul>
-                        @foreach($quizzes as $quiz)
+                    @endforelse
+    
+                    @foreach($quizzes->where('topic_id', $topic->id) as $quiz)
                         <li>
                             @if ($quiz)
                                 <a href="{{ route('quizzes.show', $quiz->id) }}">{{ $quiz->name }}</a>
@@ -166,8 +164,8 @@
                                 Quiz not found
                             @endif
                         </li>
-                        @endforeach
-                    </ul>  
+                    @endforeach
+                </ul>
                 </div>
             </div>
           </div>

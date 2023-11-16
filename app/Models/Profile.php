@@ -9,10 +9,28 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['date_of_birth', 'phone_number'];
-    
+    protected $fillable = [
+        'phone_number', 'image', 
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function student()
     {
-        return $this->belongsTo(Student::class);
+        return $this->hasOne(Student::class, 'user_id', 'user_id');
     }
+
+    public function instructor()
+    {
+        return $this->hasOne(Instructor::class, 'user_id', 'user_id');
+    }
+
+    public function administrator()
+    {
+        return $this->hasOne(Administrator::class, 'user_id', 'user_id');
+    }
+    
 }

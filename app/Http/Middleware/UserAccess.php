@@ -15,13 +15,12 @@ class UserAccess
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
 
-    public function handle(Request $request, Closure $next, $userType)
-    {
-        if(auth()->user()->type == $userType){
-            return $next($request);
-        }
-          
-        return redirect()->back()->with('status','Access Denied! As you are not an Admin');
-        
-    }
+     public function handle(Request $request, Closure $next, $userType)
+     {
+         if (auth()->user()->type == 'user') {
+             return redirect()->back()->with('status', 'Access Denied! As you are not an ' . ucfirst($userType));
+         }
+     
+         return $next($request);
+     }
 }

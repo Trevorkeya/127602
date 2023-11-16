@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id')->unique(); // Foreign key relationship to the users table
             $table->string('admission_number', 4)->unique();
-            $table->date('date_of_birth')->nullable();
             $table->string('phone_number')->nullable();
             $table->timestamps();
 
@@ -32,13 +31,11 @@ return new class extends Migration {
 
         
         foreach ($students as $student) {
-            $dateOfBirth = $student->date_of_birth ?? null; 
             $phoneNumber = $student->phone_number ?? null; 
 
             DB::table('students')->insert([
                 'user_id' => $student->id,
                 'admission_number' => generateAdmissionNumber(),
-                'date_of_birth' => $dateOfBirth, 
                 'phone_number' => $phoneNumber, 
                 'created_at' => now(),
                 'updated_at' => now(),

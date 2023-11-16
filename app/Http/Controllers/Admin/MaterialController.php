@@ -80,7 +80,7 @@ class MaterialController extends Controller
 
    public function dashboard(){
 
-    $materials = Material::all(); // Retrieve all materials
+    $materials = Material::all(); 
 
     return view('Admin.Materials.Index', ['materials' => $materials]);
    }

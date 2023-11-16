@@ -48,6 +48,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(QuizResult::class);
     }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -69,17 +74,18 @@ class User extends Authenticatable
     ];
    
     protected function type(): Attribute
-    {
-        return new Attribute(
-            get: fn ($value) =>  ["user", "admin", "instructor"][$value],
-        );
-    }
+{
+    $value = $this->attributes['type'];
+    $transformed = ["user", "admin", "instructor"][$value];
 
-    // public function getTypeAttribute($value)
-    // {
-    //     return ["User", "Admin", "Instructor"][$value];
-    // }
+    \Log::info("Type accessor: Input: $value, Output: $transformed");
 
+    return new Attribute(
+        get: fn ($value) => $transformed,
+    );
+}
+
+    
     public function twoFactorChallengePassed($code)
     {
         return $this->two_factor_code === $code;
