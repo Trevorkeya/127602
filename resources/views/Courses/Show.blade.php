@@ -99,11 +99,11 @@
                     <span class="material-symbols-outlined">add_circle</span>
                 </a>
                 <!-- Modal Trigger-->
-                <a href="#" class="float-end" data-bs-toggle="modal" data-bs-target="#createQuizModal">
+                <a href="#" class="float-end" data-bs-toggle="modal" data-bs-target="#createQuizModal{{ $topic->id }}">
                     <span class="material-symbols-outlined">new_window</span>
                 </a>
                 <!-- Quiz Modal -->
-                <div class="modal fade" id="createQuizModal" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
+                 <div class="modal fade" id="createQuizModal{{ $topic->id }}" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -126,6 +126,10 @@
                                             <option value="deactivated">Deactivate</option>
                                         </select>
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="max_attempts">Maximum Attempts</label>
+                                        <input type="number" name="max_attempts" class="form-control" min="1" value="1" required>
+                                    </div>
 
                                     <input type="hidden" name="topic_id" value="{{ $topic->id }}">
                                     <input type="hidden" name="course_id" value="{{ $course->id }}">
@@ -135,7 +139,7 @@
                             </div>
                         </div>
                     </div>
-                </div>   
+                 </div>   
                 <!-- Quiz Modal -->        
                 <ul>
                     @forelse ($topic->materials as $material)
@@ -156,15 +160,11 @@
                             <li>No materials added for this topic</li>
                     @endforelse
     
-                    @foreach($quizzes->where('topic_id', $topic->id) as $quiz)
+                    @foreach ($topic->quizzes as $quiz)
                         <li>
-                          <div class="course-m">
-                            @if ($quiz)
+                            <div class="course-m">
                                 <a href="{{ route('quizzes.show', $quiz->id) }}">{{ $quiz->name }}</a>
-                            @else
-                                Quiz not found
-                            @endif
-                          </div>
+                            </div>
                         </li>
                     @endforeach
                 </ul>

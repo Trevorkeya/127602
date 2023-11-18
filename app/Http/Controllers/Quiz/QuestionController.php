@@ -33,11 +33,15 @@ class QuestionController extends Controller
 
         // Store the answers
         foreach ($request->input('answers') as $answerData) {
-            Answer::create([
+            $answer = Answer::create([
                 'question_id' => $question->id,
                 'answer' => $answerData['answer'],
-                
+                'is_correct' => isset($answerData['is_correct']),
             ]);
+            
+            if (isset($answerData['is_correct']) && $answerData['is_correct']) {
+                $question->answers()->where('id', '<>', $answer->id)->update(['is_correct' => false]);
+            }
         }
 
         return back();

@@ -25,6 +25,7 @@ class QuizController extends Controller
             'topic_id' => 'required',
             'course_id' => 'required',
             'status' => 'required|in:active,deactivated',
+            'max_attempts' => 'required|integer|min:1',
         ]);
 
         $quiz = Quiz::create($request->all());
@@ -33,6 +34,12 @@ class QuizController extends Controller
     }
 
     public function show(Quiz $quiz){
+
+        $userAttempts = $quiz->quizResults()->where('user_id', auth()->id())->count();
+
+        if ($userAttempts >= $quiz->max_attempts) {
+            return redirect()->route('quizzes.maxAttemptsReached', ['quiz' => $quiz->id]);
+        }
 
         $quiz->load('questions.answers');
 
@@ -71,5 +78,12 @@ class QuizController extends Controller
 
         return view('Quiz.Results', compact('quizId', 'score', 'quiz', 'totalQuestions'));
     }
+
+    public function maxAttemptsReached(Quiz $quiz){
+
+        return view('Quiz.MaxAttemptsReached', compact('quiz'));
+        
+    }
+
 
 }

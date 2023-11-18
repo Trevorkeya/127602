@@ -29,18 +29,23 @@ class CourseController extends Controller
             'description' => 'required',
             'title' => 'required',
             'enrollment_key' => 'required',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        Course::create([
-            'course_code' => $request->course_code,
-            'description' => $request->description,
-            'title' => $request->title,
-            'enrollment_key' => $request->enrollment_key,
-            'user_id' => auth()->id(), 
-        ]);
+        $courseData = $request->except('background_image');
+
+        if ($request->hasFile('background_image')) {
+            $imagePath = $request->file('background_image')->store('images', 'public');
+            $courseData['background_image'] = $imagePath;
+        }
+
+        $courseData['user_id'] = auth()->id();
+
+        Course::create($courseData);
 
         return redirect()->route('courses.index')->with('success', 'Course created successfully');
     }
+
 
     public function edit($id)
     {
@@ -48,15 +53,30 @@ class CourseController extends Controller
         return view('Courses.edit', compact('course'));
     }
 
+    
     public function update(Request $request, $id)
     {
         $request->validate([
             'course_code' => 'required',
             'description' => 'required',
             'title' => 'required',
+            'enrollment_key' => 'required',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        Course::findOrFail($id)->update($request->all());
+        $course = Course::findOrFail($id);
+        $courseData = $request->except('background_image');
+
+        if ($request->hasFile('background_image')) {
+            // Delete the old background image if it exists
+            Storage::disk('public')->delete($course->background_image);
+
+            // Upload the new background image
+            $imagePath = $request->file('background_image')->store('image', 'public');
+            $courseData['background_image'] = $imagePath;
+        }
+
+        $course->update($courseData);
 
         return redirect()->route('courses.index')->with('success', 'Course updated successfully');
     }

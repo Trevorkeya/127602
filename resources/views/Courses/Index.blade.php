@@ -81,7 +81,7 @@
     </a>
     <div class="course-container">
         @foreach($courses as $key => $course)
-            <div class="course-card">
+            <div class="course-card" style="background-image: url('{{ asset('storage/' . $course->background_image) }}');">
                 <a href="{{ route('courses.show', $course->id) }}">{{ $course->title }}</a></br>
                 <div class="course-options">
                 @if(auth()->check() && auth()->user()->type === 'user' && !$course->users->contains(auth()->user()))

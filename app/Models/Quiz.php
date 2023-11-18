@@ -9,7 +9,7 @@ class Quiz extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'topic_id', 'course_id', 'status'];
+    protected $fillable = ['name', 'topic_id', 'course_id', 'status', 'max_attempts'];
 
     public function topic()
     {
@@ -24,5 +24,10 @@ class Quiz extends Model
     public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    public function quizResults()
+    {
+        return $this->hasMany(QuizResult::class);
     }
 }

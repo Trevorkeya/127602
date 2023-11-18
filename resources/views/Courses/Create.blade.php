@@ -8,18 +8,18 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 80vh; /* Adjusted the height */
+        height: 80vh;
         margin: 0 auto;
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 80%; /* Set the width of the container */
-        max-width: 600px; /* Add a max-width for responsiveness */
-        margin-top: 50px; /* Added margin-top for better positioning */
+        width: 80%;
+        max-width: 600px;
+        margin-top: 50px;
     }
 
     .containers form {
-        width: 100%; /* Make the form width 100% */
+        width: 100%;
         background-color: #f9f9f9;
         padding: 20px;
         border-radius: 5px;
@@ -29,8 +29,8 @@
     .containers form input,
     .containers form textarea {
         margin-bottom: 10px;
-        width: 100%; /* Make inputs and textarea width 100% */
-        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .containers form button {
@@ -45,6 +45,15 @@
 
     .containers form button:hover {
         background: #219d53;
+    }
+
+    .containers form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .containers form input[type="file"] {
+        margin-top: 5px;
     }
 </style>
 
@@ -62,6 +71,10 @@
         </div>
         <div class="mb-3">
             <textarea name="description" class="form-control" placeholder="Description"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="background_image">Background Image:</label>
+            <input type="file" name="background_image" class="form-control">
         </div>
         <button class="upload" type="submit">Create Course</button>
     </form>

@@ -177,10 +177,23 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     Route::post('/courses/{courseId}/enroll', [App\Http\Controllers\Main\EnrollmentController::class, 'enroll'])->name('enroll');
     Route::get('courses/{course}/topics', [App\Http\Controllers\Main\TopicController::class, 'index'])->name('topics.index');
     Route::get('/courses', [App\Http\Controllers\Main\CourseController::class, 'index'])->name('courses.index');
+
+    //Quiz section
+    Route::get('quizzes/{quiz}', [App\Http\Controllers\Quiz\QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('/quizzes/{quiz}/start-attempt', [App\Http\Controllers\Quiz\QuizController::class, 'startAttempt'])->name('quizzes.startAttempt');
+    Route::post('quizzes/{quiz}/finish', [App\Http\Controllers\Quiz\QuizController::class, 'finish'])->name('quizzes.finish');
+    Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
+
 });
 /*--------------All Normal Users Routes List--------------*/
 
 Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
+Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
+
+// routes/web.php
+
+Route::get('/materials/search', [App\Http\Controllers\Main\TopicController::class, 'search'])->name('materials.search');
+
 
 
 

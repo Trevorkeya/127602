@@ -41,6 +41,10 @@
         padding: 10px;
         border-radius: 8px;
         margin-bottom: 20px;
+        display: none;
+    }
+    fieldset.active {
+        display: block;
     }
 
     legend {
@@ -111,24 +115,31 @@
     <h3>Questions</h3>
     <form action="{{ route('quizzes.finish', $quiz->id) }}" method="POST">
         @csrf
-        @foreach($quiz->questions as $question)
-            <fieldset class="mb-4">
-                <legend>{{ $question->question }}</legend>
-                @foreach($question->answers as $answer)
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="answers[{{ $question->id }}]" value="{{ $answer->id }}" required>
-                        <label class="form-check-label">{{ $answer->answer }}</label>
-                    </div>
-                @endforeach
-            </fieldset>
-        @endforeach
-
-        <button type="submit" class="btn btn-primary">Finish Quiz</button>
-    </form>
+        <div id="questionsContainer">
+            @foreach($quiz->questions as $key => $question)
+                <fieldset class="mb-4 @if($key === 0) active @endif">
+                    <legend>{{ $question->question }}</legend>
+                    @foreach($question->answers as $answer)
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answers[{{ $question->id }}]" value="{{ $answer->id }}" required>
+                            <label class="form-check-label">{{ $answer->answer }}</label>
+                        </div>
+                    @endforeach
+                </fieldset>
+            @endforeach
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-primary" onclick="prevQuestion()">Previous</button>
+            <input type="range" min="0" max="{{ $quiz->questions->count() - 1 }}" value="0" oninput="showQuestion(this.value)">
+            <button type="button" class="btn btn-primary" onclick="nextQuestion()">Next</button>
+        </div>
+            <button type="submit" class="btn btn-primary mt-3">Finish Quiz</button>
+        </form>
 </div>
 
 <!-- Modal -->
- <div class="modal fade" id="createQuestionModal" tabindex="-1" aria-labelledby="createQuestionModalLabel" aria-hidden="true">
+ 
+  <div class="modal fade" id="createQuestionModal" tabindex="-1" aria-labelledby="createQuestionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -155,10 +166,10 @@
                     <div id="answersContainer">
                         <label class="form-label">Answers</label>
                         <div class="form-group answer-group">
-                            <input type="text" name="answers[][answer]" class="form-control mb-2" required>
+                            <input type="text" name="answers[0][answer]" class="form-control mb-2" required>
                             <div class="form-check">
-                                <input type="radio" name="correct_answer" value="0" class="form-check-input">
-                                <label class="form-check-label">Correct</label>
+                                <input type="checkbox" name="answers[0][is_correct]" class="form-check-input">
+                                <label class="form-check-label">Correct Answer</label>
                             </div>
                         </div>
                     </div>
@@ -170,28 +181,57 @@
             </div>
         </div>
     </div>
- </div>
- </div>
+  </div>
+
+ 
  <script>
     let answerIndex = 1;
 
     function addAnswer() {
-        var answersContainer = document.getElementById('answersContainer');
-        var lastAnswerGroup = answersContainer.lastElementChild;
-        var newAnswerGroup = lastAnswerGroup.cloneNode(true);
+    var answersContainer = document.getElementById('answersContainer');
+    var lastAnswerGroup = answersContainer.lastElementChild;
+    var newAnswerGroup = lastAnswerGroup.cloneNode(true);
 
-        // Clear values for cloned input fields
-        newAnswerGroup.querySelector('input[type="text"]').value = '';
-        newAnswerGroup.querySelector('input[type="radio"]').checked = false;
+    // Clear values for cloned input fields
+    newAnswerGroup.querySelector('input[type="text"]').value = '';
+    newAnswerGroup.querySelector('input[type="checkbox"]').checked = false;
 
-        // Increment answer index
-        answerIndex++;
+    // Increment answer index
+    answerIndex++;
 
-        // Update the name attribute with the new index
-        newAnswerGroup.querySelector('input[type="radio"]').name = `correct_answer_${answerIndex}`;
-        newAnswerGroup.querySelector('input[type="radio"]').value = answerIndex;
+    // Update the name attribute with the new index
+    newAnswerGroup.querySelector('input[type="text"]').name = `answers[${answerIndex}][answer]`;
+    newAnswerGroup.querySelector('input[type="checkbox"]').name = `answers[${answerIndex}][is_correct]`;
 
-        answersContainer.appendChild(newAnswerGroup);
+    answersContainer.appendChild(newAnswerGroup);
+   }
+
+   let currentQuestionIndex = 0;
+    const totalQuestions = {{ $quiz->questions->count() }};
+
+    function showQuestion(index) {
+        const questions = document.querySelectorAll('fieldset');
+        questions.forEach((question, i) => {
+            if (i === index) {
+                question.classList.add('active');
+            } else {
+                question.classList.remove('active');
+            }
+        });
+    }
+
+    function nextQuestion() {
+        if (currentQuestionIndex < totalQuestions - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion(currentQuestionIndex);
+        }
     }
  </script>
 
