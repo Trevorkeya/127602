@@ -158,11 +158,13 @@
     
                     @foreach($quizzes->where('topic_id', $topic->id) as $quiz)
                         <li>
+                          <div class="course-m">
                             @if ($quiz)
                                 <a href="{{ route('quizzes.show', $quiz->id) }}">{{ $quiz->name }}</a>
                             @else
                                 Quiz not found
                             @endif
+                          </div>
                         </li>
                     @endforeach
                 </ul>

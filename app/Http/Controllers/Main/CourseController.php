@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Quiz;
+use App\Models\User;
 
 
 class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::with('users')->get();
         return view('Courses.index', compact('courses'));
     }
 
@@ -27,13 +28,15 @@ class CourseController extends Controller
             'course_code' => 'required',
             'description' => 'required',
             'title' => 'required',
+            'enrollment_key' => 'required',
         ]);
 
         Course::create([
             'course_code' => $request->course_code,
             'description' => $request->description,
             'title' => $request->title,
-            'user_id' => auth()->id(), // Assuming the currently logged-in user is creating the course
+            'enrollment_key' => $request->enrollment_key,
+            'user_id' => auth()->id(), 
         ]);
 
         return redirect()->route('courses.index')->with('success', 'Course created successfully');

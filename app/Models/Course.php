@@ -9,15 +9,16 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_code', 'description', 'title', 'user_id'];
+    protected $fillable = ['course_code', 'description', 'title', 'enrollment_key', 'user_id'];
 
-    public function creator()
-    {
+    public function creator(){
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function topics()
-    {
+    public function topics(){
         return $this->hasMany(Topic::class);
+    }
+    public function users(){
+        return $this->belongsToMany(User::class);
     }
 }

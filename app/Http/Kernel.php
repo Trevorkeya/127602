@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
 
         'user-access' => \App\Http\Middleware\UserAccess::class,
         'isAdmin' => \App\Http\Middleware\AdminMiddleware ::class,
+        'enroll.check' => \App\Http\Middleware\EnrollCheck::class,
     ];
 }

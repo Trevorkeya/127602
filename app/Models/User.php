@@ -29,6 +29,16 @@ class User extends Authenticatable
     ];
 
 
+    public function isStudent()
+    {
+        return $this->type === 'student';
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class);
+    }
+
     public function materials()
     {
         return $this->hasMany(Material::class);
@@ -76,7 +86,7 @@ class User extends Authenticatable
     protected function type(): Attribute
 {
     $value = $this->attributes['type'];
-    $transformed = ["user", "admin", "instructor"][$value];
+    $transformed = ["user", "admin", "instructor", "manager"][$value];
 
     \Log::info("Type accessor: Input: $value, Output: $transformed");
 

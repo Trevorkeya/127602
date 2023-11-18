@@ -51,9 +51,18 @@
 <div class="containers">
     <form action="{{ route('courses.store') }}" method="post" enctype="multipart/form-data">
         @csrf
-        <input type="text" name="course_code" class="form-control" placeholder="Course Code">
-        <input type="text" name="title" class="form-control" placeholder="Title">
-        <textarea name="description" class="form-control" placeholder="Description"></textarea>
+        <div class="mb-3">
+            <input type="text" name="course_code" class="form-control" placeholder="Course Code">
+        </div>
+        <div class="mb-3">
+            <input type="text" name="title" class="form-control" placeholder="Title">
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enrollment key" id="enrollment_key" name="enrollment_key" required>
+        </div>
+        <div class="mb-3">
+            <textarea name="description" class="form-control" placeholder="Description"></textarea>
+        </div>
         <button class="upload" type="submit">Create Course</button>
     </form>
 </div>

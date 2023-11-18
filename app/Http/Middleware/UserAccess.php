@@ -17,7 +17,7 @@ class UserAccess
 
      public function handle(Request $request, Closure $next, $userType)
      {
-         if (auth()->user()->type == 'user') {
+         if (auth()->user()->type == 'manager') {
              return redirect()->back()->with('status', 'Access Denied! As you are not an ' . ucfirst($userType));
          }
      

@@ -67,6 +67,13 @@
 </style>
 
 <div class="container">
+    @if ($errors->any())
+        <ul class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <li class="text-danger">{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
    <a href="{{ url('/courses/create')}}" class="float-end">
         <span class="material-symbols-outlined">
             add_circle
@@ -77,6 +84,33 @@
             <div class="course-card">
                 <a href="{{ route('courses.show', $course->id) }}">{{ $course->title }}</a></br>
                 <div class="course-options">
+                @if(auth()->check() && auth()->user()->type === 'user' && !$course->users->contains(auth()->user()))
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#enrollModal{{ $course->id }}">
+                        Enroll
+                    </button>
+                    <!-- Enroll Modal -->
+                    <div class="modal fade" id="enrollModal{{ $course->id }}" tabindex="-1" aria-labelledby="enrollModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="enrollModalLabel">Enrollment Key</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('enroll', $course->id) }}" method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="enrollmentKey" class="form-label">Enter Enrollment Key:</label>
+                                            <input type="text" class="form-control" id="enrollmentKey" name="enrollment_key" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Enroll</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Enroll Modal -->
+                @endif
                     <a  href="{{ route('courses.edit', $course->id) }}"><span class="material-symbols-outlined">edit</span></a>
                     <form action="{{ route('courses.destroy', $course->id) }}" method="POST">
                         @csrf

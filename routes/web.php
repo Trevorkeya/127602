@@ -75,6 +75,11 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
     //Quiz routes
 
+    // Profile Section
+    Route::get('/profile', [App\Http\Controllers\Profiles\ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [App\Http\Controllers\Profiles\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [App\Http\Controllers\Profiles\ProfileController::class, 'update'])->name('profile.update');
+
     Route::prefix('admin')->group(function (){
        //Create user Routes
        Route::controller(App\Http\Controllers\Admin\UserController::class)->group(function(){
@@ -146,18 +151,37 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function () {
     Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
     //Quiz routes
 
+    // Profile Section
+    Route::get('/profile', [App\Http\Controllers\Profiles\ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [App\Http\Controllers\Profiles\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [App\Http\Controllers\Profiles\ProfileController::class, 'update'])->name('profile.update');
 });
 /*--------------All Instructor Routes List----------------------*/
 
 /*--------------All Normal Users Routes List--------------*/
+Route::middleware(['auth', 'user-access:user'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'show'])->name('2fa.verify');
     Route::post('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'verify']);
     
-    // Add resources route
+    // materials section
     Route::get('/materials', [App\Http\Controllers\Admin\MaterialController::class, 'index'])->name('materials.index');
 
+    // Profile Section
     Route::get('/profile', [App\Http\Controllers\Profiles\ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [App\Http\Controllers\Profiles\ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/update', [App\Http\Controllers\Profiles\ProfileController::class, 'update'])->name('profile.update');
+
+    //course section
+    Route::post('/courses/{courseId}/enroll', [App\Http\Controllers\Main\EnrollmentController::class, 'enroll'])->name('enroll');
+    Route::get('courses/{course}/topics', [App\Http\Controllers\Main\TopicController::class, 'index'])->name('topics.index');
+    Route::get('/courses', [App\Http\Controllers\Main\CourseController::class, 'index'])->name('courses.index');
+});
+/*--------------All Normal Users Routes List--------------*/
+
+Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
+
+
+
+
