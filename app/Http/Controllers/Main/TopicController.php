@@ -110,13 +110,7 @@ class TopicController extends Controller
         return redirect()->route('courses.show', $courseId)->with('success', 'Materials added successfully');
     }
     
-    public function search(Request $request){
-        $query = $request->input('query');
-
-        // Perform a search query based on $query
-        $materials = Material::where('title', 'like', "%{$query}%")->get();
-
-        return view('partials.materials_list', compact('materials'));
-    }   
+    
+    
     
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Instructor;
+use App\Models\Administrators;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -28,8 +29,13 @@ class UserController extends Controller
     public function showInstructors()
     {
         $instructors = Instructor::with('user')->paginate(10); 
-        return view('Admin.users.instructors', compact( 'instructors'));
+        return view('Admin.users.instructors', compact('instructors'));
 
+    }
+    public function showAdmins()
+    {
+        $administrators = Administrators::with('user')->paginate(10);
+        return view('Admin.users.admins', compact('administrators'));
     }
 
 

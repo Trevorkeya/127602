@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+  
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +21,43 @@ Route::get('/', function () {
 
 Auth::routes();
 
+/*--------------All Normal Users Routes List--------------*/
+Route::middleware(['auth', 'user-access:user'])->group(function () {
+
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'show'])->name('2fa.verify');
+    Route::post('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'verify']);
+    
+    // materials section
+    Route::get('/materials', [App\Http\Controllers\Admin\MaterialController::class, 'index'])->name('materials.index');
+
+    // Profile Section
+    Route::get('/profile', [App\Http\Controllers\Profiles\ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [App\Http\Controllers\Profiles\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [App\Http\Controllers\Profiles\ProfileController::class, 'update'])->name('profile.update');
+
+    //course section
+    Route::post('/courses/{courseId}/enroll', [App\Http\Controllers\Main\EnrollmentController::class, 'enroll'])->name('enroll');
+    Route::get('courses/{course}/topics', [App\Http\Controllers\Main\TopicController::class, 'index'])->name('topics.index');
+    Route::get('/courses', [App\Http\Controllers\Main\CourseController::class, 'index'])->name('courses.index');
+    Route::get('/mycourses', [App\Http\Controllers\Main\MyCoursesController::class, 'index'])->name('mycourses.index');
+    Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
+    Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
+
+
+    //Quiz section
+    Route::get('quizzes/{quiz}', [App\Http\Controllers\Quiz\QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('/quizzes/{quiz}/start-attempt', [App\Http\Controllers\Quiz\QuizController::class, 'startAttempt'])->name('quizzes.startAttempt');
+    Route::post('quizzes/{quiz}/finish', [App\Http\Controllers\Quiz\QuizController::class, 'finish'])->name('quizzes.finish');
+    Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
+
+});
+/*--------------All Normal Users Routes List--------------*/
+
 
   
 /*--------------All Admin Routes List----------------------*/
-Route::middleware(['auth', 'isAdmin'])->group(function () {
+Route::middleware(['auth', 'user-access:admin'])->group(function () {
     
     Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'adminHome'])->name('admin.home');
     Route::get('/instructor/home', [App\Http\Controllers\HomeController::class, 'instructorHome'])->name('instructor.home');
@@ -46,6 +81,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/materials', [App\Http\Controllers\Admin\MaterialController::class, 'store'])->name('materials.store');
     Route::delete('/materials/{material}', [App\Http\Controllers\Admin\MaterialController::class, 'destroy'])->name('materials.destroy');
     Route::get('materials/{file}', [App\Http\Controllers\Admin\MaterialController::class, 'download'])->name('materials.download');
+    Route::get('/materials/search', [App\Http\Controllers\Main\TopicController::class, 'search'])->name('materials.search');
     //materials routes
 
     //Category routes
@@ -63,6 +99,10 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::delete('courses/{course}/topics/{topic}/destroy', [App\Http\Controllers\Main\TopicController::class,'destroy'])->name('topics.destroy');
     Route::get('courses/{course}/topics/{topic}/add-materials', [App\Http\Controllers\Main\TopicController::class, 'createMaterials'])->name('topics.addMaterials');
     Route::post('courses/{course}/topics/{topic}/store-materials', [App\Http\Controllers\Main\TopicController::class, 'storeMaterials'])->name('topics.storeMaterials');
+    Route::get('/mycourses', [App\Http\Controllers\Main\MyCoursesController::class, 'index'])->name('mycourses.index');
+    Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
+
+
     //Topic routes
 
     //Quiz routes
@@ -73,6 +113,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('quizzes/{quiz}/storeQuestions', [App\Http\Controllers\Quiz\QuestionController::class, 'store'])->name('questions.store');
     Route::post('quizzes/{quiz}/finish', [App\Http\Controllers\Quiz\QuizController::class, 'finish'])->name('quizzes.finish');
     Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
+    Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
+
     //Quiz routes
 
     // Profile Section
@@ -86,11 +128,12 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
             Route::get('/users','index');
             Route::get('/users/create','create');
             Route::post('/users', 'store');
-            Route::get('/users/{user_id}','edit');
+            Route::get('/users/{user_id}','edit')->name('user.edit');
             Route::put('users/{user_id}','update');
-            Route::get('users/destroy/{user_id}','destroy');
+            Route::get('users/destroy/{user_id}','destroy')->name('user.delete');
             Route::get('/students','showStudents');
             Route::get('/instructors','showInstructors');
+            Route::get('/administrators', 'showAdmins');
 
       });
     });
@@ -98,10 +141,10 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 /*--------------All Admin Routes List----------------------*/
 
 /*--------------All Instructor Routes List----------------------*/
-Route::middleware(['auth', 'user-access:instructor'])->group(function () {
+Route::middleware(['auth', 'user-access:instructor'])->group(function(){
 
-    Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'adminHome'])->name('admin.home');
     Route::get('/instructor/home', [App\Http\Controllers\HomeController::class, 'instructorHome'])->name('instructor.home');
+    Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'adminHome'])->name('admin.home');
   
     //courses routes
     Route::get('/admin/courses',[App\Http\Controllers\Main\CourseController::class, 'dashboard'])->name('admin.dashboard');
@@ -112,6 +155,8 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function () {
     Route::get('/courses/{course}/edit', [App\Http\Controllers\Main\CourseController::class, 'edit'])->name('courses.edit');
     Route::put('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'destroy'])->name('courses.destroy');
+    Route::get('/mycourses', [App\Http\Controllers\Main\MyCoursesController::class, 'index'])->name('mycourses.index');
+
     //courses routes
 
     //materials routes
@@ -122,6 +167,7 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function () {
     Route::post('/materials', [App\Http\Controllers\Admin\MaterialController::class, 'store'])->name('materials.store');
     Route::delete('/materials/{material}', [App\Http\Controllers\Admin\MaterialController::class, 'destroy'])->name('materials.destroy');
     Route::get('materials/{file}', [App\Http\Controllers\Admin\MaterialController::class, 'download'])->name('materials.download');
+    Route::get('/materials/search', [App\Http\Controllers\Main\TopicController::class, 'search'])->name('materials.search');
     //materials routes
 
     //Category routes
@@ -139,6 +185,8 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function () {
     Route::delete('courses/{course}/topics/{topic}/destroy', [App\Http\Controllers\Main\TopicController::class,'destroy'])->name('topics.destroy');
     Route::get('courses/{course}/topics/{topic}/add-materials', [App\Http\Controllers\Main\TopicController::class, 'createMaterials'])->name('topics.addMaterials');
     Route::post('courses/{course}/topics/{topic}/store-materials', [App\Http\Controllers\Main\TopicController::class, 'storeMaterials'])->name('topics.storeMaterials');
+    Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
+
     //Topic routes
 
     //Quiz routes
@@ -149,6 +197,8 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function () {
     Route::post('quizzes/{quiz}/storeQuestions', [App\Http\Controllers\Quiz\QuestionController::class, 'store'])->name('questions.store');
     Route::post('quizzes/{quiz}/finish', [App\Http\Controllers\Quiz\QuizController::class, 'finish'])->name('quizzes.finish');
     Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
+    Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
+
     //Quiz routes
 
     // Profile Section
@@ -158,41 +208,8 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function () {
 });
 /*--------------All Instructor Routes List----------------------*/
 
-/*--------------All Normal Users Routes List--------------*/
-Route::middleware(['auth', 'user-access:user'])->group(function () {
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'show'])->name('2fa.verify');
-    Route::post('/2fa-verify', [App\Http\Controllers\TwoFactorVerificationController::class, 'verify']);
-    
-    // materials section
-    Route::get('/materials', [App\Http\Controllers\Admin\MaterialController::class, 'index'])->name('materials.index');
 
-    // Profile Section
-    Route::get('/profile', [App\Http\Controllers\Profiles\ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [App\Http\Controllers\Profiles\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile/update', [App\Http\Controllers\Profiles\ProfileController::class, 'update'])->name('profile.update');
-
-    //course section
-    Route::post('/courses/{courseId}/enroll', [App\Http\Controllers\Main\EnrollmentController::class, 'enroll'])->name('enroll');
-    Route::get('courses/{course}/topics', [App\Http\Controllers\Main\TopicController::class, 'index'])->name('topics.index');
-    Route::get('/courses', [App\Http\Controllers\Main\CourseController::class, 'index'])->name('courses.index');
-
-    //Quiz section
-    Route::get('quizzes/{quiz}', [App\Http\Controllers\Quiz\QuizController::class, 'show'])->name('quizzes.show');
-    Route::get('/quizzes/{quiz}/start-attempt', [App\Http\Controllers\Quiz\QuizController::class, 'startAttempt'])->name('quizzes.startAttempt');
-    Route::post('quizzes/{quiz}/finish', [App\Http\Controllers\Quiz\QuizController::class, 'finish'])->name('quizzes.finish');
-    Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
-
-});
-/*--------------All Normal Users Routes List--------------*/
-
-Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
-Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
-
-// routes/web.php
-
-Route::get('/materials/search', [App\Http\Controllers\Main\TopicController::class, 'search'])->name('materials.search');
 
 
 

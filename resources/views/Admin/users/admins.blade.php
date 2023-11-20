@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Students')
+@section('title', 'Administrators')
 
 @section('content')
 
@@ -12,7 +12,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3>Students</h3>
+                <h3>Admins</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -20,7 +20,6 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Admission Number</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone Number</th>
@@ -28,27 +27,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($students as $student)
+                            @forelse ($administrators as $administrator)
                                 <tr>
-                                    <td>{{ $student->id }}</td>
-                                    <td>{{ $student->admission_number }}</td>
-                                    <td>{{ $student->user->name }}</td>
-                                    <td>{{ $student->user->email }}</td>
-                                    <td>{{ $student->phone_number }}</td>
+                                    <td>{{ $administrator->id }}</td>
+                                    <td>{{ $administrator->user->name }}</td>
+                                    <td>{{ $administrator->user->email }}</td>
+                                    <td>{{ $administrator->phone_number }}</td>
                                     <td>
-                                        <a href="{{ url('admin/students/' . $student->id . '/edit') }}" class="btn btn-sm btn-success">Edit</a> 
-                                        <a href="{{ url('admin/students/' . $student->id . '/destroy') }}" onclick="return confirm('Are you sure you want to delete Student?')" class="btn btn-sm btn-danger">Delete</a> 
+                                        <a href="{{ url('admin/administrators/' . $administrator->id . '/edit') }}" class="btn btn-sm btn-success">Edit</a> 
+                                        <a href="{{ url('admin/administrators/' . $administrator->id . '/destroy') }}" onclick="return confirm('Are you sure you want to delete Student?')" class="btn btn-sm btn-danger">Delete</a> 
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6">No Students Available</td>
+                                    <td colspan="6">No Administrators Available</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                     <div>
-                        {{$students->links()}}
+                        {{$administrators->links()}}
                     </div>
                 </div>
             </div>

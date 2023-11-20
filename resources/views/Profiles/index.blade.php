@@ -4,8 +4,8 @@
 
 @section('content')
 
-<div style="background-color: #eee;">
-  <div class="container py-5">
+<div>
+  <div class="container py-5" style="background-color: #eee;">
     <div class="row">
       <div class="col-lg-4">
         <div class="card mb-4">
@@ -67,8 +67,8 @@
                     <p class="text-muted mb-0">{{ Auth::user()->profile->student->phone_number ?? ''}}</p>
                 @elseif(Auth::user()->type == 'instructor')
                     <p class="text-muted mb-0">{{ Auth::user()->profile->instructor->phone_number ?? ''}}</p>
-                @elseif(Auth::user()->type == 'administrator')
-                    <p class="text-muted mb-0">{{ Auth::user()->profile->administrator->phone_number ?? ''}}</p>
+                @elseif(Auth::user()->type == 'admin')
+                    <p class="text-muted mb-0">{{ Auth::user()->profile->administrators->phone_number ?? ''}}</p>
                 @else
                     <p class="text-muted mb-0">Phone number not available</p>
                 @endif
@@ -77,11 +77,47 @@
             <hr>
           </div>
         </div>
+
+        {{-- Display Quiz Results for User --}}
+        @if(Auth::user()->type == 'user')
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Quiz Results</h5>
+
+            @foreach($user->courses as $course)
+            <h6 class="mt-3">{{ $course->name }}</h6>
+
+            @foreach($course->quizzes ?? [] as $quiz)
+              @php
+                $latestResult = $user->quizResults()
+                  ->where('quiz_id', $quiz->id)
+                  ->orderByDesc('created_at')
+                  ->first();
+              @endphp
+
+              @if($latestResult)
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p class="mb-0">{{ $quiz->name }}</p>
+                  </div>
+                  <div class="col-sm-6">
+                    <p class="text-muted mb-0">Results: {{ $latestResult->score }} / {{ $quiz->questions->count() }}</p>
+                  </div>
+                </div>
+                <hr>
+              @endif
+            @endforeach
+
+            @endforeach
+
+           
+          </div>
+        </div>
+        @endif
+
       </div>
     </div>
   </div>
-</div>
-<div class="container">
 </div>
 
 @endsection

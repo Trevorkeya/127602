@@ -47,10 +47,10 @@ class ProfileController extends Controller
         // Update instructor's phone number
         $profile->instructor->phone_number = $request->input('phone');
         $profile->instructor->save();
-    } elseif ($user->type == 'administrator') {
+    } elseif ($user->type == 'admin') {
         // Update administrator's phone number
-        $profile->administrator->phone_number = $request->input('phone');
-        $profile->administrator->save();
+        $profile->administrators->phone_number = $request->input('phone');
+        $profile->administrators->save();
     }
 
     // Handle image upload if provided

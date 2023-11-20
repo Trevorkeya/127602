@@ -9,7 +9,7 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_code', 'description', 'title', 'enrollment_key', 'user_id'];
+    protected $fillable = ['course_code', 'description', 'title', 'enrollment_key', 'background_image', 'user_id'];
 
     public function creator(){
         return $this->belongsTo(User::class, 'user_id');

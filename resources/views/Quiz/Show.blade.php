@@ -3,9 +3,6 @@
 @section('title', 'Quiz')
 
 @section('content')
-
-<!-- Add this to your existing styles or create a new CSS file -->
-
 <style>
     .containers {
         background-color: #fff;
@@ -108,10 +105,11 @@
     @endif
     <h2>{{ $quiz->name }}</h2>
     <p>Status: {{ $quiz->status }}</p>
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createQuestionModal">
-        Open Question Modal
-    </button>
-
+    @if(auth()->user()->id === $quiz->user_id || auth()->user()->type === 'admin')
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createQuestionModal">
+            Add Question
+        </button>
+    @endif
     <h3>Questions</h3>
     <form action="{{ route('quizzes.finish', $quiz->id) }}" method="POST">
         @csrf
@@ -133,7 +131,9 @@
             <input type="range" min="0" max="{{ $quiz->questions->count() - 1 }}" value="0" oninput="showQuestion(this.value)">
             <button type="button" class="btn btn-primary" onclick="nextQuestion()">Next</button>
         </div>
+        @if(auth()->user()->type === 'user')
             <button type="submit" class="btn btn-primary mt-3">Finish Quiz</button>
+        @endif
         </form>
 </div>
 
@@ -182,9 +182,8 @@
         </div>
     </div>
   </div>
-
- 
- <script>
+<!-- Modal --> 
+<script>
     let answerIndex = 1;
 
     function addAnswer() {
@@ -233,8 +232,6 @@
             showQuestion(currentQuestionIndex);
         }
     }
- </script>
-
-<!-- Modal -->
+</script>
 
 @endsection

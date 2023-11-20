@@ -24,3 +24,4 @@ class UserAccess
          return $next($request);
      }
 }
+

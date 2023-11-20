@@ -28,12 +28,6 @@ class User extends Authenticatable
         'two_factor_code'
     ];
 
-
-    public function isStudent()
-    {
-        return $this->type === 'student';
-    }
-
     public function courses()
     {
         return $this->belongsToMany(Course::class);
@@ -52,6 +46,11 @@ class User extends Authenticatable
     public function instructor()
     {
         return $this->hasOne(Instructor::class);
+    }
+
+    public function administrators()
+    {
+        return $this->hasOne(Administrators::class);
     }
 
     public function quizResults()
@@ -84,7 +83,7 @@ class User extends Authenticatable
     ];
    
     protected function type(): Attribute
-{
+   {
     $value = $this->attributes['type'];
     $transformed = ["user", "admin", "instructor", "manager"][$value];
 
@@ -93,7 +92,9 @@ class User extends Authenticatable
     return new Attribute(
         get: fn ($value) => $transformed,
     );
-}
+   }
+
+   
 
     
     public function twoFactorChallengePassed($code)

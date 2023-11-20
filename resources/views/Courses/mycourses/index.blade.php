@@ -91,13 +91,6 @@
             @endforeach
         </ul>
     @endif
-   <a href="{{ url('/courses/create')}}" class="float-end">
-        @if(auth()->user()->type === 'admin' || auth()->user()->type === 'instructor')
-        <span class="material-symbols-outlined">
-            add_circle
-        </span>
-        @endif
-    </a>
     <div class="course-container">
         @foreach($courses as $key => $course)
             <div class="course-card" style="background-image: url('{{ asset('storage/' . $course->background_image) }}');">

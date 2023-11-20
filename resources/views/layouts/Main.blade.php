@@ -24,15 +24,17 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.234/pdf.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
 <body>
-<div id="app">
+  <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/home') }}">
                     E-Learning
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -87,13 +89,15 @@
     <aside class="sidebar">
       <ul class="links">
         <h4>Main Menu</h4>
+        @if(auth()->check() && (auth()->user()->type === 'admin' || auth()->user()->type === 'instructor'))
+          <li>
+            <span class="material-symbols-outlined">dashboard</span>
+            <a href="{{ url('/admin/home') }}">Dashboard</a>
+          </li>
+        @endif
         <li>
-          <span class="material-symbols-outlined">dashboard</span>
-          <a href="{{ url('/admin/home') }}">Dashboard</a>
-        </li>
-        <li>
-          <span class="material-symbols-outlined">show_chart</span>
-          <a href="#">my Courses</a>
+          <span class="material-symbols-outlined">school</span>
+          <a href="{{ url('/mycourses') }}">My Courses</a>
         </li>
         <li>
           <span class="material-symbols-outlined">flag</span>

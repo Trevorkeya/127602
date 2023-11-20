@@ -79,11 +79,15 @@
     @endif
     <div class="course-details">
         <h2>{{ $course->course_code }} {{ $course->title }}</h2>
-        <p>{{ $course->description }}<a href="{{ url('courses/'.$course->id.'/topics/create')}}" class="float-end">
-            <span class="material-symbols-outlined">
-                add_circle
-            </span>
-        </a></p>
+        <p>{{ $course->description }}
+        <a href="{{ url('courses/'.$course->id.'/topics/create')}}" class="float-end">
+            @if(auth()->user()->type === 'admin' || auth()->user()->type === 'instructor')
+                <span class="material-symbols-outlined">
+                    topic
+                </span>
+            @endif
+        </a>
+        </p>
         
     </div>
     <div class="course-detail">
@@ -95,13 +99,19 @@
                 </div>
                 
                 <div class="topic-dropdown">
-                <a href="{{ route('topics.addMaterials', ['course' => $course->id, 'topic' => $topic->id]) }}" class="float-end">
-                    <span class="material-symbols-outlined">add_circle</span>
-                </a>
-                <!-- Modal Trigger-->
-                <a href="#" class="float-end" data-bs-toggle="modal" data-bs-target="#createQuizModal{{ $topic->id }}">
-                    <span class="material-symbols-outlined">new_window</span>
-                </a>
+                @if(auth()->user()->id === $topic->user_id || auth()->user()->type === 'admin')
+                    <a href="{{ route('topics.addMaterials', ['course' => $course->id, 'topic' => $topic->id]) }}" class="float-end">
+                        <span class="material-symbols-outlined">add_circle</span>
+                    </a>
+                @endif
+
+                @if(auth()->user()->id === $topic->user_id || auth()->user()->type === 'admin')
+                    <!-- Modal Trigger-->
+                        <a href="#" class="float-end" data-bs-toggle="modal" data-bs-target="#createQuizModal{{ $topic->id }}">
+                        <span class="material-symbols-outlined">quiz</span>
+                        </a>
+                @endif
+
                 <!-- Quiz Modal -->
                  <div class="modal fade" id="createQuizModal{{ $topic->id }}" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -147,11 +157,11 @@
                             <div class="course-m">
                                 @if($material->type === 'pdf')
                                     <a class="" href="#" onclick="viewPDF('{{ asset($material->file_path) }}')">
-                                        {{ $material->title }}. {{ $material->type }}
+                                        <h6>{{ $material->title }}. {{ $material->type }}</h6>
                                     </a>
                                 @else
                                     <a class="" href="{{ asset($material->file_path) }}" target="_blank">
-                                        {{ $material->title }}. {{ $material->type }}
+                                        <h6>{{ $material->title }}. {{ $material->type }}</h6>
                                     </a>
                                 @endif
                             </div>

@@ -28,9 +28,9 @@ class Profile extends Model
         return $this->hasOne(Instructor::class, 'user_id', 'user_id');
     }
 
-    public function administrator()
+    public function administrators()
     {
-        return $this->hasOne(Administrator::class, 'user_id', 'user_id');
+        return $this->hasOne(Administrators::class, 'user_id', 'user_id');
     }
     
 }
