@@ -75,15 +75,37 @@ class QuizController extends Controller
     {
         $quiz = Quiz::findOrFail($quizId);
         $totalQuestions = $quiz->questions->count();
+        $courseId = $quiz->topic->course->id; 
 
-        return view('Quiz.Results', compact('quizId', 'score', 'quiz', 'totalQuestions'));
+        return view('Quiz.Results', compact('quizId', 'score', 'quiz', 'totalQuestions','courseId'));
     }
 
-    public function maxAttemptsReached(Quiz $quiz){
+    public function userResults($courseId)
+{
+    $user = auth()->user();
+    $course = Course::findOrFail($courseId);
+    $course->load('topics.quizzes', 'quizzes');
 
-        return view('Quiz.MaxAttemptsReached', compact('quiz'));
-        
+    $results = [];
+
+    foreach ($course->quizzes as $quiz) {
+        $latestResult = $user->quizResults()
+            ->where('quiz_id', $quiz->id)
+            ->orderByDesc('created_at')
+            ->first();
+
+        if ($latestResult) {
+            $results[] = [
+                'quiz' => $quiz,
+                'score' => $latestResult->score,
+                'totalQuestions' => $quiz->questions->count(),
+            ];
+        }
     }
+
+    return view('Quiz.QuizResults', compact('results','user', 'course'));
+}
+
 
 
 }

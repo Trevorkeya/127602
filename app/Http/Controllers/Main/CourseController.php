@@ -13,13 +13,14 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::with('users')->get();
-        return view('Courses.index', compact('courses'));
+        $courses = Course::with('users')->where('status', true)->get();
+        return view('Courses.Index', compact('courses'));
     }
 
-    public function create()
-    {
-        return view('Courses.create');
+    public function create(){
+
+        return view('Courses.Create');
+
     }
 
     public function store(Request $request)
@@ -50,7 +51,7 @@ class CourseController extends Controller
     public function edit($id)
     {
         $course = Course::findOrFail($id);
-        return view('Courses.edit', compact('course'));
+        return view('Courses.Edit', compact('course'));
     }
 
     
@@ -86,7 +87,7 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
         $course = Course::with('topics.materials')->find($id);
         $quizzes = Quiz::all();
-        return view('Courses.show', compact('course','quizzes'));
+        return view('Courses.Show', compact('course','quizzes'));
     }
 
     public function destroy($id)
@@ -103,5 +104,13 @@ class CourseController extends Controller
     
         return view('Admin.Courses.Index', ['courses' => $courses]);
        }
+
+    public function toggleStatus($id)
+    {
+        $course = Course::findOrFail($id);
+        $course->update(['status' => !$course->status]);
+       
+        return back()->with('success', 'Course status updated successfully');
+    }
 
 }

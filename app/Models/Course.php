@@ -9,7 +9,7 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_code', 'description', 'title', 'enrollment_key', 'background_image', 'user_id'];
+    protected $fillable = ['course_code', 'description', 'title', 'enrollment_key', 'background_image', 'user_id','status'];
 
     public function creator(){
         return $this->belongsTo(User::class, 'user_id');
@@ -20,5 +20,8 @@ class Course extends Model
     }
     public function users(){
         return $this->belongsToMany(User::class);
+    }
+    public function quizzes(){
+        return $this->hasManyThrough(Quiz::class, Topic::class);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.Main')
 
-@section('title', 'Home')
+@section('title', 'create courses')
 
 @section('content')
 <style>

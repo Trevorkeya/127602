@@ -79,14 +79,24 @@
     @endif
     <div class="course-details">
         <h2>{{ $course->course_code }} {{ $course->title }}</h2>
-        <p>{{ $course->description }}
+        <h5>created by: {{ $course->creator->name }}</h5>
+        <p>{{ $course->description }}</br>
         <a href="{{ url('courses/'.$course->id.'/topics/create')}}" class="float-end">
-            @if(auth()->user()->type === 'admin' || auth()->user()->type === 'instructor')
+        @if(auth()->user()->id === $course->user_id || auth()->user()->type === 'admin')
                 <span class="material-symbols-outlined">
                     topic
                 </span>
             @endif
         </a>
+        @if(auth()->user()->id === $course->user_id || auth()->user()->type === 'admin')
+        <a href="{{ route('courses.toggle-status', $course->id) }}" class="btn btn-primary float-end" onclick="event.preventDefault(); document.getElementById('toggle-status-form{{ $course->id }}').submit();">
+            {{ $course->status ? 'Deactivate' : 'Activate' }}
+        </a>
+        @endif
+        <form id="toggle-status-form{{ $course->id }}" action="{{ route('courses.toggle-status', $course->id) }}" method="POST" style="display: none;">
+            @csrf
+            @method('PATCH')
+        </form>
         </p>
         
     </div>
@@ -96,7 +106,16 @@
             <div class="topic-heading">
                 <div class="topic-title">
                     <span class="material-symbols-outlined topic-dropdown-toggle"><h3>{{ $topic->title }}</h3></span>
+                    @if(auth()->user()->id === $topic->user_id || auth()->user()->type === 'admin')
+                        <form action="{{ route('topics.destroy', ['course' => $course->id, 'topic' => $topic->id]) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit" class="btn btn-danger float-end" onclick="return confirm('Are you sure you want to delete this topic?')"><span class="material-symbols-outlined">delete_sweep</span></button>
+                        </form>
+                    @endif
                 </div>
+               
                 
                 <div class="topic-dropdown">
                 @if(auth()->user()->id === $topic->user_id || auth()->user()->type === 'admin')
@@ -105,12 +124,15 @@
                     </a>
                 @endif
 
+                
+
                 @if(auth()->user()->id === $topic->user_id || auth()->user()->type === 'admin')
                     <!-- Modal Trigger-->
                         <a href="#" class="float-end" data-bs-toggle="modal" data-bs-target="#createQuizModal{{ $topic->id }}">
                         <span class="material-symbols-outlined">quiz</span>
                         </a>
                 @endif
+
 
                 <!-- Quiz Modal -->
                  <div class="modal fade" id="createQuizModal{{ $topic->id }}" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
@@ -178,9 +200,11 @@
                         </li>
                     @endforeach
                 </ul>
+               
                 </div>
             </div>
           </div>
+          
         @endforeach
     </div>
 </div>

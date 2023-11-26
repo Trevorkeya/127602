@@ -25,6 +25,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,6 +33,17 @@
                             <tr>
                                 <td>{{ $category->id }}</td>
                                 <td>{{ $category->name }}</td>
+                                <td>
+                                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-success">Edit</a>
+
+                                        <!-- Delete Form -->
+                                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" onclick="return confirm('Are you sure you want to delete this category?')" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                        <!-- End Delete Form -->
+                                    </td>
                             </tr>
                             @empty
                             <tr>

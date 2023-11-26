@@ -19,28 +19,39 @@
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 8px;
-        text-align: center;
+        text-align: left;
         background-color: #f9f9f9;
         display: flex;
         flex-direction: column;
         justify-content: center; /* Vertical centering */
         background-size: cover;
         
+        
     }
 
     .course-image {
     background-size: cover;
     background-position: center;
-    border-radius: 8px 8px 0 0; /* Rounded corners only at the top */
-    height: 70%; /* Adjust the height as needed */
+    border-radius: 8px 8px 0 0; 
+    height: 70%; 
     }
 
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5); 
+        pointer-events: none;
+    }
 
     .course-card a {
         display: block;
         text-decoration: none;
-        color: #333;
+        color: #E8E8E8;
         margin-bottom: 10px;
+        z-index: 0;
     }
 
     .course-card a:hover {
@@ -91,17 +102,23 @@
             @endforeach
         </ul>
     @endif
-   <a href="{{ url('/courses/create')}}" class="float-end">
-        @if(auth()->user()->type === 'admin' || auth()->user()->type === 'instructor')
+    <a href="{{ url('/course/create')}}" class= "float-end"> 
+    @if(auth()->user()->type === 'admin' || auth()->user()->type === 'instructor')
         <span class="material-symbols-outlined">
             add_circle
         </span>
-        @endif
+    @endif
     </a>
+    
     <div class="course-container">
         @foreach($courses as $key => $course)
             <div class="course-card" style="background-image: url('{{ asset('storage/' . $course->background_image) }}');">
-                <a href="{{ route('courses.show', $course->id) }}"><h5>{{ $course->title }}</h5></a></br>
+            <div class="overlay"></div> 
+                <a href="{{ route('courses.show', $course->id) }}">
+                    <h5>{{ $course->course_code }}</h5>
+                    <h5>{{ $course->title }}</h5>
+                    <h6>{{ $course->creator->name }}</h6>
+                </a></br>
                 <div class="course-options">
                 @if(auth()->check() && auth()->user()->type === 'user' && !$course->users->contains(auth()->user()))
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#enrollModal{{ $course->id }}">

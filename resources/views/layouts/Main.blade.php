@@ -89,6 +89,10 @@
     <aside class="sidebar">
       <ul class="links">
         <h4>Main Menu</h4>
+          <li>
+            <span class="material-symbols-outlined">home</span>
+            <a class="navbar-brand" href="{{ url('/home') }}">home</a>
+          </li>
         @if(auth()->check() && (auth()->user()->type === 'admin' || auth()->user()->type === 'instructor'))
           <li>
             <span class="material-symbols-outlined">dashboard</span>
@@ -96,15 +100,15 @@
           </li>
         @endif
         <li>
+        <span class="material-symbols-outlined">account_circle</span>
+          <a href="{{ route('profile.show') }}">Profile</a>
+        </li>
+        <hr>
+        <h4>Content</h4>
+        <li>
           <span class="material-symbols-outlined">school</span>
           <a href="{{ url('/mycourses') }}">My Courses</a>
         </li>
-        <li>
-          <span class="material-symbols-outlined">flag</span>
-          <a href="#">Reports</a>
-        </li>
-        <hr>
-        <h4>Advanced</h4>
         <li>
           <span class="material-symbols-outlined">Library_books</span>
           <a href="{{ url('/materials') }}">Library</a>
@@ -114,16 +118,8 @@
           <a href="/courses">Courses</a>
         </li>
         <li>
-          <span class="material-symbols-outlined">quiz</span>
-          <a href="#">Assessments</a>
-        </li>
-        <li>
-          <span class="material-symbols-outlined">pacemaker</span>
-          <a href="{{ route('profile.show') }}">Profile</a>
-        </li>
-        <li>
-          <span class="material-symbols-outlined">monitoring</span>
-          <a href="#">Analytic</a>
+          <span class="material-symbols-outlined">show_chart</span>
+          <a href="{{ isset($course) ? route('quizzes.userResults', ['courseId' => $course->id]) : '#' }}">Results</a>
         </li>
         <hr>
         <h4>Account</h4>
