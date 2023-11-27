@@ -34,7 +34,7 @@
                                 <tr>
                                     <td>{{ $course->id }}</td>
                                     <td>{{ $course->course_code }}</td>
-                                    <td>{{ $course->title }}</td>
+                                    <td><a href="{{ url('/courses/'.$course->id.'/topics/table') }}" class="btn">{{ $course->title }}</a></td>
                                     <td>{{ $course->status ? 'Active' : 'Inactive' }}</td>
                                     <td>
                                     @if(auth()->user()->id === $course->user_id || auth()->user()->type === 'admin')

@@ -94,7 +94,10 @@
     }
 </style>
 
-<div class="container">
+<div class="container"></br>
+   <a href="/courses" style="text-decoration: none; color: inherit;">
+    <h1>Courses</h1>
+   </a>
     @if ($errors->any())
         <ul class="alert alert-danger">
             @foreach ($errors->all() as $error)
@@ -102,6 +105,13 @@
             @endforeach
         </ul>
     @endif
+    </br>
+    <form action="{{ route('courses.index') }}" method="GET">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search for a course" name="search">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+      </div>
+    </form>
     <a href="{{ url('/course/create')}}" class= "float-end"> 
     @if(auth()->user()->type === 'admin' || auth()->user()->type === 'instructor')
         <span class="material-symbols-outlined">

@@ -11,7 +11,9 @@
         <div class="card mb-4">
           <div class="card-body text-center">
           @if (Auth::user()->profile && Auth::user()->profile->image)
-            <img src="{{ asset('storage/images/'.Auth::user()->profile->image) }}" alt="{{ Auth::user()->name }}" class="rounded-circle img-fluid" style="width: 150px;">
+            <img src="{{ asset('storage/images/' . Auth::user()->profile->image) }}" alt="{{ Auth::user()->name }}" class="rounded-circle img-fluid" style="width: 150px;">
+          @else
+            <img src="{{ asset('images/carousel-3.png') }}" alt="Default Image" class="rounded-circle img-fluid" style="width: 150px;">
           @endif
             <h5 class="my-3">{{ Auth::user()->name}}</h5>
             <p class="text-muted mb-1"></p>
@@ -77,44 +79,6 @@
             <hr>
           </div>
         </div>
-
-        {{-- Display Quiz Results for User --}}
-        @if(Auth::user()->type == 'user')
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title">Quiz Results</h5>
-
-            @foreach($user->courses as $course)
-            <h6 class="mt-3">{{ $course->name }}</h6>
-
-            @foreach($course->quizzes ?? [] as $quiz)
-              @php
-                $latestResult = $user->quizResults()
-                  ->where('quiz_id', $quiz->id)
-                  ->orderByDesc('created_at')
-                  ->first();
-              @endphp
-
-              @if($latestResult)
-                <div class="row">
-                  <div class="col-sm-6">
-                    <p class="mb-0">{{ $quiz->name }}</p>
-                  </div>
-                  <div class="col-sm-6">
-                    <p class="text-muted mb-0">Results: {{ $latestResult->score }} / {{ $quiz->questions->count() }}</p>
-                  </div>
-                </div>
-                <hr>
-              @endif
-            @endforeach
-
-            @endforeach
-
-           
-          </div>
-        </div>
-        @endif
-
       </div>
     </div>
   </div>

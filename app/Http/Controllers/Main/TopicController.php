@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Main;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Topic;
 use App\Models\Material;
@@ -16,7 +18,7 @@ class TopicController extends Controller
         $course = Course::find($courseId);
         $topics = Topic::where('course_id', $courseId)->get();
         $materials = Material::all();
-        return view('Course.Show', compact('course', 'topics', 'materials'));
+        return view('Courses.Show', compact('course', 'topics', 'materials'));
     }
 
     public function create($courseId)
@@ -110,6 +112,26 @@ class TopicController extends Controller
         return redirect()->route('courses.show', $courseId)->with('success', 'Materials added successfully');
     }
     
+    public function viewPDF($materialId)
+    {
+        $material = Material::findOrFail($materialId);
+
+        if ($material->type !== 'pdf') {
+            abort(404); 
+        }
+
+        $pdfPath = Storage::path($material->file_path);
+
+        if (!file_exists($pdfPath)) {
+            abort(404);
+        }
+
+        return response()->file($pdfPath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $material->title . '.pdf"',
+        ]);
+    }
+
     
     
     

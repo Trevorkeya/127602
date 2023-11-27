@@ -35,7 +35,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/home') }}">
-                    E-Learning
+                  SmartStudy Central
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -122,7 +122,7 @@
           <a href="{{ isset($course) ? route('quizzes.userResults', ['courseId' => $course->id]) : '#' }}">Results</a>
         </li>
         <hr>
-        <h4>Account</h4>
+        <!-- <h4>Account</h4>
         <li>
           <span class="material-symbols-outlined">bar_chart</span>
           <a href="#">Overview</a>
@@ -134,7 +134,7 @@
         <li>
           <span class="material-symbols-outlined">settings</span>
           <a href="#">Settings</a>
-        </li>
+        </li> -->
       </ul>
     </aside>
     </div> 
@@ -142,6 +142,69 @@
         <main class="main-content">
           @yield('content')
         </main>
+        <!-- Include the chatbot button and modal -->
+         @include('partials.chatbot')
       </div>
+      <style>
+        
+      </style>
+       <!-- Footer -->
+        <footer class="text-center text-lg-start bg-dark text-white">
+         <section class="d-flex justify-content-center justify-content-lg-between p-3 border-bottom"></section>
+          <!-- Section: Links  -->
+            <section class="">
+              <div class="container text-center text-md-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                  <!-- Grid column -->
+                  <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                    <!-- Content -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                      <i class="fas fa-gem me-3"></i>SmartStudy Central
+                    </h6>
+                    <p>
+                    Join us and embark on a path of continuous growth and knowledge acquisition.
+                    </p>
+                  </div>
+                  
+                  <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                  <!-- Links -->
+                  <h6 class="text-uppercase fw-bold mb-4">
+                    Common Go to
+                  </h6>
+                  <p>
+                    <a href="{{ url('/home') }}" class="text-reset">Home</a>
+                  </p>
+                  <p>
+                    <a href="/courses" class="text-reset">Courses</a>
+                  </p>
+                  <p>
+                    <a href="#!" class="text-reset">About us</a>
+                  </p>
+                  <p>
+                    <a href="{{ route('logout') }}" class="text-reset">logout</a>
+                  </p>
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                  <!-- Links -->
+                  <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+                  <p><span class="material-symbols-outlined">home</span> Off Waiyaki Way Lavington Nairobi, Kenya</p>
+                  <p><span class="material-symbols-outlined">mail</span>trevor.anjere@strathmore.edu</p>
+                  <p><span class="material-symbols-outlined">call</span></i> + 254 712345678</p>
+                  <p><span class="material-symbols-outlined">phone_iphone</span> + 254 787654321</p>
+                </div>
+                <!-- Grid column -->
+              </div>
+     
+            
+            </section>
+          <!-- Section: Links  -->
+        </footer>
+      <!-- Footer -->
+    
+  </div>
 </body>
 </html>

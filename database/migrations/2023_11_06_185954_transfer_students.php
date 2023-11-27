@@ -17,7 +17,7 @@ return new class extends Migration {
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->unique(); // Foreign key relationship to the users table
+            $table->unsignedBigInteger('user_id')->unique(); 
             $table->string('admission_number', 4)->unique();
             $table->string('phone_number')->nullable();
             $table->timestamps();

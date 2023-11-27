@@ -78,7 +78,10 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::put('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'destroy'])->name('courses.destroy');
     Route::get('/mycourses', [App\Http\Controllers\Main\MyCoursesController::class, 'index'])->name('mycourses.index');
+    Route::get('/courses/{course}/topics/table', [App\Http\Controllers\Main\CourseController::class, 'showTopics'])->name('courses.showTopics');
     Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Main\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
+    
+
    //courses routes
    
    //materials routes
@@ -110,9 +113,8 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::delete('courses/{course}/topics/{topic}/destroy', [App\Http\Controllers\Main\TopicController::class,'destroy'])->name('topics.destroy');
     Route::get('courses/{course}/topics/{topic}/add-materials', [App\Http\Controllers\Main\TopicController::class, 'createMaterials'])->name('topics.addMaterials');
     Route::post('courses/{course}/topics/{topic}/store-materials', [App\Http\Controllers\Main\TopicController::class, 'storeMaterials'])->name('topics.storeMaterials');
+    Route::get('topics/view-pdf/{materialId}', [App\Http\Controllers\Main\TopicController::class,'viewPDF'])->name('topics.view-pdf');
     Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
-
-
    //Topic routes
 
    //Quiz routes
@@ -125,8 +127,7 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
     Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
     Route::get('/quizzes/user-results/{courseId}', [App\Http\Controllers\Quiz\QuizController::class, 'userResults'])->name('quizzes.userResults');
-
-
+    Route::get('quiz/course-results', [App\Http\Controllers\Quiz\QuizController::class, 'courseResults'])->name('quizzes.courseResults');
    //Quiz routes
 
    // Profile Section
@@ -169,6 +170,8 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function(){
     Route::delete('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'destroy'])->name('courses.destroy');
     Route::get('/mycourses', [App\Http\Controllers\Main\MyCoursesController::class, 'index'])->name('mycourses.index');
     Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Main\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
+    Route::get('/courses/{course}/topics', [App\Http\Controllers\Main\CourseController::class, 'showTopics'])->name('courses.showTopics');
+
     //courses routes
 
     //materials routes
@@ -200,7 +203,10 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function(){
     Route::delete('courses/{course}/topics/{topic}/destroy', [App\Http\Controllers\Main\TopicController::class,'destroy'])->name('topics.destroy');
     Route::get('courses/{course}/topics/{topic}/add-materials', [App\Http\Controllers\Main\TopicController::class, 'createMaterials'])->name('topics.addMaterials');
     Route::post('courses/{course}/topics/{topic}/store-materials', [App\Http\Controllers\Main\TopicController::class, 'storeMaterials'])->name('topics.storeMaterials');
+    Route::get('topics/view-pdf/{materialId}', [App\Http\Controllers\Main\TopicController::class,'viewPDF'])->name('topics.view-pdf');
+
     Route::get('/courses/{course}', [App\Http\Controllers\Main\CourseController::class, 'show'])->name('courses.show')->middleware('enroll.check');
+
     //Topic routes
 
     //Quiz routes
@@ -213,6 +219,7 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function(){
     Route::get('/quizzes/result/{quizId}/{score}', [App\Http\Controllers\Quiz\QuizController::class, 'result'])->name('quizzes.result');
     Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
     Route::get('/quizzes/user-results/{courseId}', [App\Http\Controllers\Quiz\QuizController::class, 'userResults'])->name('quizzes.userResults');
+    Route::get('quiz/course-results', [App\Http\Controllers\Quiz\QuizController::class, 'courseResults'])->name('quizzes.courseResults');
     //Quiz routes
 
     // Profile Section
@@ -225,3 +232,5 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function(){
 Route::get('/chatbot', [App\Http\Controllers\ChatbotController::class, 'index']);
 Route::post('/chatbot/ask', [App\Http\Controllers\ChatbotController::class, 'ask']);
 
+Route::get('/contact', [App\Http\Controllers\ContactController::class, 'showForm'])->name('contact.form');
+Route::post('/contact', [App\Http\Controllers\ContactController::class, 'submitForm'])->name('contact.submit');

@@ -11,9 +11,17 @@ use App\Models\User;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $courses = Course::with('users')->where('status', true)->get();
+
+        $search = $request->input('search');
+    
+        $courses = Course::when($search, function ($query, $search) {
+            return $query->where('title', 'like', '%' . $search . '%')
+                         ->orWhere('course_code', 'like', '%' . $search . '%');
+        })->get();
+
         return view('Courses.Index', compact('courses'));
     }
 
@@ -111,6 +119,13 @@ class CourseController extends Controller
         $course->update(['status' => !$course->status]);
        
         return back()->with('success', 'Course status updated successfully');
+    }
+
+    public function showTopics(Course $course)
+    {
+        $topics = $course->topics;
+
+        return view('Admin.Courses.showTopics', compact('course', 'topics'));
     }
 
 }

@@ -17,6 +17,10 @@
                         <li>Quiz Name: {{ $quiz->name }}</li>
                     </ul>
                 @endif
+
+                <h3>Chatbot Feedback:</h3>
+                <p>{{ $botResponse }}</p>
+
             </div>
             @if (isset($courseId))
                 <a href="{{ route('courses.show', $courseId) }}" class="btn btn-primary">Back to Course</a>

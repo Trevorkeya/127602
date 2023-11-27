@@ -3,150 +3,102 @@
 @section('title', 'Home')
   
 @section('content')
-
-<style>
-    /* Add your custom styles here */
-    #chatbotModal {
-        position: fixed;
-        bottom: 20px; /* Add some margin at the bottom */
-        right: 20px; /* Add some margin at the right */
-        width: 400px;
-        background-color: #f1f1f1;
-        border: 1px solid #d4d4d4;
-        padding: 10px;
-        min-height: 300px;
-        overflow-y: auto;
-        display: none;
-        border-radius: 15px; /* Adjust the border-radius to make corners curved */
-    }
-
-    .chatbot-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px;
-        border-top-left-radius: 15px; /* Match the border-radius for top-left corner */
-        border-top-right-radius: 15px; /* Match the border-radius for top-right corner */
-    }
-
-    #chatbotMessages {
-        max-height: 200px;
-        overflow-y: auto;
-        margin-bottom: 10px;
-    }
-
-    #chatbotContent {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1; /* Add this line to make the content area grow to fill the available space */
-    }
-
-    .user-message {
-        background-color: #2196F3;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 5px;
-        max-width: 70%;
-        word-wrap: break-word;
-        align-self: flex-end; /* Align user messages to the right */
-    }
-
-    .chatbot-message {
-        background-color: #C0C0C0;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 5px;
-        max-width: 70%;
-        word-wrap: break-word;
-        align-self: flex-start; /* Align chatbot messages to the left */
-    }
-
-    #userMessage {
-        width: 100%;
-        margin-bottom: 5px;
-        padding: 10px;
-        box-sizing: border-box;
-    }
-
-    #closeButton {
-        background-color: #f44336;
-        color: white;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-</style>
-
-<div class="container">   
-    @if (session('status'))
-        <div class="alert alert-success" role="alert">
-            {{ session('status') }}
-        </div>
-    @endif         
-    
-     <!-- Button to open Chatbot Modal -->
-     <a href="#" class="float-end" onclick="toggleChatbotModal()">
-        <span class="material-symbols-outlined">chat</span>
-    </a>
-
-    <!-- Chatbot Modal -->
-    <div id="chatbotModal">
-        <div class="chatbot-header">
-            <span>EduBot</span>
-            <button onclick="toggleChatbotModal()" id="closeButton"><span class="material-symbols-outlined">close_small</span></button>
-        </div>
-        <div id="chatbotContent">
-            <div id="chatbotMessages"></div>
-            <input type="text" id="userMessage" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
-            
+</div>
+    <!-- Hero Image Start -->
+    <div class="hero-image">
+        <div class="overlay"></div> 
+        <img src="{{ asset('images/carousel-3.png') }}" alt="Hero Image">
+        <div class="hero-text">
+            <h1>Welcome to Our E-Learning Platform</h1>
+            <p>Discover a World of Knowledge at Your Fingertips</p>
         </div>
     </div>
+    <!-- Hero Image End -->
 
-    <script>
-        function toggleChatbotModal() {
-            var modal = document.getElementById('chatbotModal');
-            modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+    <!-- About Us Section Start -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                <h2 class="mb-4" style="color: #007bff; font-weight: bold;">About Us</h2>
+                <p>
+                    Welcome to our innovative e-learning platform, where we believe that education should be accessible to everyone, everywhere. 
+                    Our mission is to provide a diverse range of high-quality courses, taught by industry experts, to empower you on your learning journey.
+                </p>
+                <p>
+                    Whether you're a student, a professional looking to upskill, or someone eager to explore new interests, our platform offers a dynamic and 
+                    engaging learning experience. Join us and embark on a path of continuous growth and knowledge acquisition.
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <!-- About Us Section End -->
 
-            // Show the chat messages area when opening the modal
-            if (modal.style.display === 'block') {
-                document.getElementById('chatbotMessages').style.display = 'block';
-            }
-        }
+    <!-- Featured Courses Section Start -->
+    <div class="container mt-5">
+        <h2 class="text-center mb-4" style="color: #007bff; font-weight: bold;">Featured Courses</h2>
+        <div class="row">
 
-        function sendMessage() {
-            var userName = "{{ Auth::user()->name }}";
-            var userMessage = document.getElementById('userMessage').value;
+            @php
+                // Retrieve up to three active courses ordered by enrollment count
+                $featuredCourses = App\Models\Course::withCount('users')
+                    ->where('status', true)
+                    ->orderByDesc('users_count')
+                    ->take(3)
+                    ->get();
+            @endphp
 
-            // Display user message
-            document.getElementById('chatbotMessages').innerHTML += '<div class="user-message">' + userName + ': ' + userMessage + '</div>';
+            @foreach ($featuredCourses as $course)
+                <div class="col-md-4 mb-4">
+                    <div class="card fade-in">
+                        <img src="{{ asset('storage/' . $course->background_image) }}" class="card-img-top" alt="Course Image">
+                        <div class="card-body">
+                            <h5 class="card-title" href="/courses">{{ $course->title }}</h5>
+                            <p class="card-text"><small class="text-muted">Creator: {{ $course->creator->name }}</small></p>
+                            <p class="card-text"><small class="text-muted">Enrollments: {{ $course->users_count }}</small></p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
 
-            // Make an AJAX request to the chatbot server
-            axios.post('/chatbot/ask', { message: userMessage })
-                .then(function (response) {
-                    var botResponse = response.data.botResponse;
-                    
-                    // Display chatbot message
-                    document.getElementById('chatbotMessages').innerHTML += '<div class="chatbot-message">Bot: ' + botResponse + '</div>';
-                })
-                .catch(function (error) {
-                    console.error('Error sending message to chatbot:', error);
-                });
+        </div>
+    </div>
+    <hr>
+    <!-- Featured Courses Section End -->
 
-            // Clear the input field
-            document.getElementById('userMessage').value = '';
-        }
+    <!-- Contact Us Section Start -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #007bff; font-weight: bold;">Contact Us</h2>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form action="{{ route('contact.submit') }}" method="POST">
+                @csrf
 
-        // Handle Enter key press in the input field
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-    </script>
-</div>
+                <!-- Name Input -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+
+                <!-- Email Input -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+
+                <!-- Message Input -->
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+  </div>
+  <hr>
+ <!-- Contact Us Section End -->
            
 @endsection

@@ -9,6 +9,8 @@ use App\Models\Topic;
 use App\Models\Course;
 use App\Models\QuizResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 
 class QuizController extends Controller
 {
@@ -48,27 +50,27 @@ class QuizController extends Controller
 
     public function finish(Request $request, $quizId)
     {
-        // Get the selected answers from the form
         $selectedAnswers = $request->input('answers');
 
-        // Get the correct answers from the database
         $correctAnswers = DB::table('answers')
             ->whereIn('id', $selectedAnswers)
             ->where('is_correct', true)
             ->pluck('id');
 
-        // Calculate the user's score
         $score = count($correctAnswers);
 
-        // Save the score to the database
         QuizResult::create([
             'user_id' => auth()->id(),
             'quiz_id' => $quizId,
             'score' => $score,
         ]);
 
-        // Redirect to a result page or do any other action
-        return redirect()->route('quizzes.result', ['quizId' => $quizId, 'score' => $score]);
+        $userMessage = "I completed the quiz with a score of $score";
+        $response = Http::post('http://127.0.0.1:5000/ask', ['message' => $userMessage]);
+
+        $botResponse = $response->json('response');
+
+        return redirect()->route('quizzes.result', ['quizId' => $quizId, 'score' => $score, 'botResponse' => $botResponse]);
     }
 
     public function result(Request $request, $quizId, $score)
@@ -77,11 +79,13 @@ class QuizController extends Controller
         $totalQuestions = $quiz->questions->count();
         $courseId = $quiz->topic->course->id; 
 
-        return view('Quiz.Results', compact('quizId', 'score', 'quiz', 'totalQuestions','courseId'));
+        $botResponse = $request->input('botResponse');
+
+        return view('Quiz.Results', compact('quizId', 'score', 'quiz', 'totalQuestions','courseId','botResponse'));
     }
 
     public function userResults($courseId)
-{
+    {
     $user = auth()->user();
     $course = Course::findOrFail($courseId);
     $course->load('topics.quizzes', 'quizzes');
@@ -104,8 +108,59 @@ class QuizController extends Controller
     }
 
     return view('Quiz.QuizResults', compact('results','user', 'course'));
-}
+   }
 
+   public function courseResults()
+   {
+    $courses = Course::with('quizzes', 'users')->get();
 
+    $results = collect();
 
+    foreach ($courses as $course) {
+        $courseData = [
+            'course' => $course,
+            'enrolledUsers' => $course->users,
+            'quizResults' => $this->getQuizResultsForCourse($course),
+        ];
+
+        $results->push($courseData);
+    }
+
+    return view('Quiz.CourseResults', compact('results'));
+   }
+
+   private function getQuizResultsForCourse(Course $course)
+   {
+    $quizResults = collect();
+
+    foreach ($course->quizzes as $quiz) {
+        $quizResultsData = [
+            'quiz' => $quiz,
+            'results' => $this->getQuizResultsForQuiz($course, $quiz),
+        ];
+
+        $quizResults->push($quizResultsData);
+    }
+
+    return $quizResults;
+   }
+
+   private function getQuizResultsForQuiz(Course $course, Quiz $quiz)
+   {
+    $results = collect();
+
+    foreach ($course->users as $user) {
+        $latestResult = $user->quizResults()
+            ->where('quiz_id', $quiz->id)
+            ->orderByDesc('created_at')
+            ->first();
+
+        $results->push([
+            'user' => $user,
+            'score' => $latestResult ? $latestResult->score : null,
+        ]);
+    }
+
+    return $results;
+   }
 }

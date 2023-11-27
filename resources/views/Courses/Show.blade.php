@@ -178,9 +178,9 @@
                         <li>
                             <div class="course-m">
                                 @if($material->type === 'pdf')
-                                    <a class="" href="#" onclick="viewPDF('{{ asset($material->file_path) }}')">
-                                        <h6>{{ $material->title }}. {{ $material->type }}</h6>
-                                    </a>
+                                <a href="{{ route('topics.view-pdf', $material->id) }}" target="_blank">
+                                    <h6>{{ $material->title }}. {{ $material->type }}</h6>
+                                </a>
                                 @else
                                     <a class="" href="{{ asset($material->file_path) }}" target="_blank">
                                         <h6>{{ $material->title }}. {{ $material->type }}</h6>
@@ -208,6 +208,31 @@
         @endforeach
     </div>
 </div>
+<iframe id="pdfViewer" style="width: 100%; height: 500px; display: none;"></iframe>
+<script>
+    function viewPDF(pdfPath) {
+    console.log(pdfPath);
+
+    // Create a new iframe element
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '500px';
+
+    // Set the source of the iframe to the PDF path
+    iframe.src = pdfPath;
+
+    // Append the iframe to the document body
+    document.body.appendChild(iframe);
+
+    // Handle errors
+    iframe.onerror = function () {
+        console.error('Failed to load PDF:', pdfPath);
+    };
+   }
+
+
+</script>
+
 
 <script>
     const dropdownToggles = document.querySelectorAll('.topic-dropdown-toggle');
