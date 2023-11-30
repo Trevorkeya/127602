@@ -24,6 +24,11 @@ Route::get('/course/create', function () {
 Route::get('/materials/create', function (){
     return view ('Materials.Create');
 });
+
+Route::get('/courses/generate-pdf', [App\Http\Controllers\Main\CourseController::class, 'generatePDF'])->name('courses.generate-pdf');
+Route::get('courses/view-pdf', [App\Http\Controllers\Main\CourseController::class, 'viewPDF'])->name('view-pdf');
+Route::get('courses/download-pdf', [App\Http\Controllers\Main\CourseController::class, 'downloadPDF'])->name('download-pdf');
+
 Auth::routes();
 
 /*--------------All Normal Users Routes List--------------*/
@@ -80,9 +85,9 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/mycourses', [App\Http\Controllers\Main\MyCoursesController::class, 'index'])->name('mycourses.index');
     Route::get('/courses/{course}/topics/table', [App\Http\Controllers\Main\CourseController::class, 'showTopics'])->name('courses.showTopics');
     Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Main\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
-    
-
-   //courses routes
+    Route::get('/courses/{course}/enrolled-users', [App\Http\Controllers\Main\CourseController::class, 'enrolledUsers'])->name('courses.enrolled-users');
+    Route::get('/courses/generate-pdf', [App\Http\Controllers\Main\CourseController::class, 'generatePDF'])->name('courses.generate-pdf');
+    //courses routes
    
    //materials routes
     Route::get('/admin/materials', [App\Http\Controllers\Admin\MaterialController::class, 'dashboard'])->name('admin.dashboard');
@@ -128,6 +133,8 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/quizzes/{quiz}/max-attempts-reached', [App\Http\Controllers\Quiz\QuizController::class, 'maxAttemptsReached'])->name('quizzes.maxAttemptsReached');
     Route::get('/quizzes/user-results/{courseId}', [App\Http\Controllers\Quiz\QuizController::class, 'userResults'])->name('quizzes.userResults');
     Route::get('quiz/course-results', [App\Http\Controllers\Quiz\QuizController::class, 'courseResults'])->name('quizzes.courseResults');
+    Route::get('/get-quiz-result', [App\Http\Controllers\Quiz\QuizController::class,'getQuizResult']);
+
    //Quiz routes
 
    // Profile Section
@@ -171,9 +178,12 @@ Route::middleware(['auth', 'user-access:instructor'])->group(function(){
     Route::get('/mycourses', [App\Http\Controllers\Main\MyCoursesController::class, 'index'])->name('mycourses.index');
     Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Main\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
     Route::get('/courses/{course}/topics', [App\Http\Controllers\Main\CourseController::class, 'showTopics'])->name('courses.showTopics');
-
+    Route::get('/courses/{course}/enrolled-users', [App\Http\Controllers\Main\CourseController::class, 'enrolledUsers'])->name('courses.enrolled-users');
+    Route::get('/courses/generate-pdf', [App\Http\Controllers\Main\CourseController::class, 'generatePDF'])->name('courses.generate-pdf');
+    Route::get('courses/view-pdf', [App\Http\Controllers\Main\CourseController::class, 'viewPDF'])->name('view-pdf');
+    Route::get('courses/download-pdf', [App\Http\Controllers\Main\CourseController::class, 'downloadPDF'])->name('download-pdf');
     //courses routes
-
+ 
     //materials routes
     Route::get('/admin/materials', [App\Http\Controllers\Admin\MaterialController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('materials/{file}', [App\Http\Controllers\Admin\MaterialController::class, 'download'])->name('materials.download');

@@ -15,6 +15,8 @@
                     <a href="{{ url('/course/create') }}" class="btn btn-primary btn-sm float-end">
                         Add Course
                     </a>
+                    <a href="{{ route('courses.generate-pdf') }}" class="btn btn-info btn-sm">Generate PDF</a>
+                    <a href="{{ route('view-pdf') }}" class="btn btn-success btn-sm">View PDF</a>
                 </h3>
             </div>
             <div class="card-body">
@@ -33,8 +35,8 @@
                             @forelse ($courses as $course)
                                 <tr>
                                     <td>{{ $course->id }}</td>
-                                    <td>{{ $course->course_code }}</td>
-                                    <td><a href="{{ url('/courses/'.$course->id.'/topics/table') }}" class="btn">{{ $course->title }}</a></td>
+                                    <td><a href="{{ url('/courses/'.$course->id.'/topics/table') }}" class="btn">{{ $course->course_code }}</a></td>
+                                    <td><a href="{{ route('courses.enrolled-users', $course->id) }}" class="btn">{{ $course->title }}</a></td>
                                     <td>{{ $course->status ? 'Active' : 'Inactive' }}</td>
                                     <td>
                                     @if(auth()->user()->id === $course->user_id || auth()->user()->type === 'admin')

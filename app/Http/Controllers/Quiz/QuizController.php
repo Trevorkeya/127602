@@ -47,6 +47,10 @@ class QuizController extends Controller
 
         return view('Quiz.Show', compact('quiz'));
     }
+    public function maxAttemptsReached(Quiz $quiz)
+    {
+        return view('Quiz.MaxAttemptsReached', compact('quiz'));
+    }
 
     public function finish(Request $request, $quizId)
     {
@@ -66,9 +70,15 @@ class QuizController extends Controller
         ]);
 
         $userMessage = "I completed the quiz with a score of $score";
-        $response = Http::post('http://127.0.0.1:5000/ask', ['message' => $userMessage]);
+       $response = Http::post('http://127.0.0.1:5000/ask', ['message' => $userMessage]);
 
-        $botResponse = $response->json('response');
+       if ($response->successful()) {
+           $botResponse = $response->json('response');
+       } else {
+        // Log the error for debugging
+        \Log::error("Error in communication with Flask server: " . $response->body());
+        $botResponse = "Error communicating with the chatbot server.";
+       }
 
         return redirect()->route('quizzes.result', ['quizId' => $quizId, 'score' => $score, 'botResponse' => $botResponse]);
     }
@@ -162,5 +172,13 @@ class QuizController extends Controller
     }
 
     return $results;
+   }
+
+   public function getQuizResult(Request $request)
+   {
+    $user_name = $request->input('user_name');
+    $quiz_result = QuizResult::where('user_name', $user_name)->orderBy('created_at', 'desc')->first();
+
+    return response()->json($quiz_result);
    }
 }

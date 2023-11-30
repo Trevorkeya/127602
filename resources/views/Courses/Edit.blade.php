@@ -46,17 +46,43 @@
     .containers form button:hover {
         background: #219d53;
     }
+
+    /* Your existing styles remain unchanged */
+
+    .containers form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .containers form input[type="file"] {
+        margin-top: 5px;
+    }
 </style>
+
 <div class="containers">
-    <form action="{{ route('courses.update', $course->id) }}" method="post">
+    <form action="{{ route('courses.update', $course->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-        <input type="text" name="course_code" value="{{ $course->course_code }}">
-        <textarea name="description">{{ $course->description }}</textarea>
-        <input type="text" name="title" value="{{ $course->title }}">
+
+        <div class="mb-3">
+            <input type="text" name="course_code" class="form-control" placeholder="Course Code" value="{{ $course->course_code }}">
+        </div>
+        <div class="mb-3">
+            <input type="text" name="title" class="form-control" placeholder="Title" value="{{ $course->title }}">
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enrollment key" id="enrollment_key" name="enrollment_key" required value="{{ $course->enrollment_key }}">
+        </div>
+        <div class="mb-3">
+            <textarea name="description" class="form-control" placeholder="Description">{{ $course->description }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="background_image">Background Image:</label>
+            <input type="file" name="background_image" class="form-control">
+        </div>
+
         <button type="submit">Update Course</button>
     </form>
 </div>
-
 
 @endsection

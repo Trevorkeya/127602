@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Main;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Quiz;
 use App\Models\User;
-
-
+use PDF;
 class CourseController extends Controller
 {
     public function index(Request $request)
@@ -127,5 +127,40 @@ class CourseController extends Controller
 
         return view('Admin.Courses.showTopics', compact('course', 'topics'));
     }
+
+    public function enrolledUsers(Course $course)
+   {
+    $enrolledUsers = $course->users;
+
+    return view('Admin.Courses.EnrolledUsers', compact('course', 'enrolledUsers'));
+   }
+
+   public function generatePDF()
+  {
+    $courses = Course::all();
+
+    $pdf = PDF::loadView('Admin.Courses.PDF', compact('courses'));
+
+    return $pdf->download('Courses.pdf');
+  }
+
+  public function viewPDF()
+{
+    $courses = Course::all(); 
+
+    $pdf = PDF::loadView('pdf.coursesdetails', ['courses' => $courses])
+        ->setPaper('a4', 'portrait');
+
+    return $pdf->stream();
+}
+
+public function downloadPDF()
+{
+    $courses = Course::all();
+    $pdf = PDF::loadView('pdf.coursesdetails', ['courses' => $courses])
+        ->setPaper('a4', 'portrait');
+
+    return $pdf->download('courses-details.pdf');
+}
 
 }
