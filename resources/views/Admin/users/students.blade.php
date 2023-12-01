@@ -34,7 +34,6 @@
                                     <td>{{ $student->admission_number }}</td>
                                     <td>{{ $student->user->name }}</td>
                                     <td>{{ $student->user->email }}</td>
-                                    <td>{{ $student->phone_number }}</td>
                                     <td>
                                         <a href="{{ url('admin/students/' . $student->id . '/edit') }}" class="btn btn-sm btn-success">Edit</a> 
                                         <a href="{{ url('admin/students/' . $student->id . '/destroy') }}" onclick="return confirm('Are you sure you want to delete Student?')" class="btn btn-sm btn-danger">Delete</a> 

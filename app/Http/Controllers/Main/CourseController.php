@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Quiz;
 use App\Models\User;
+use App\Models\Administrators;
+use App\Models\Instructor;
+use App\Models\Student;
+
 use PDF;
 class CourseController extends Controller
 {
@@ -163,4 +167,21 @@ public function downloadPDF()
     return $pdf->download('courses-details.pdf');
 }
 
+public function dashboards()
+{
+    $studentsCount = User::where('type', 0)->count();
+    $adminsCount = User::where('type', 1)->count();
+    $instructorsCount = User::where('type', 2)->count();
+
+    $courses = Course::withCount('users')->get();
+    $coursesCount = $courses->count();
+
+    return view('Admin.Dashboard', [
+        'coursesCount' => $coursesCount,
+        'studentsCount' => $studentsCount,
+        'adminsCount' => $adminsCount,
+        'instructorsCount' => $instructorsCount,
+        'courses' => $courses,
+    ]);
+}
 }

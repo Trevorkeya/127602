@@ -96,7 +96,7 @@
         @if(auth()->check() && (auth()->user()->type === 'admin' || auth()->user()->type === 'instructor'))
           <li>
             <span class="material-symbols-outlined">dashboard</span>
-            <a href="{{ url('/admin/home') }}">Dashboard</a>
+            <a href="{{ url('/admin/dashboard') }}">Dashboard</a>
           </li>
         @endif
         <li>

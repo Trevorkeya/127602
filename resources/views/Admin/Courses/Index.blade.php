@@ -27,6 +27,7 @@
                                 <th>ID</th>
                                 <th>Course Code</th>
                                 <th>Title</th>
+                                <th>Enrollment key</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -37,6 +38,7 @@
                                     <td>{{ $course->id }}</td>
                                     <td><a href="{{ url('/courses/'.$course->id.'/topics/table') }}" class="btn">{{ $course->course_code }}</a></td>
                                     <td><a href="{{ route('courses.enrolled-users', $course->id) }}" class="btn">{{ $course->title }}</a></td>
+                                    <td>{{$course->enrollment_key}}</td>
                                     <td>{{ $course->status ? 'Active' : 'Inactive' }}</td>
                                     <td>
                                     @if(auth()->user()->id === $course->user_id || auth()->user()->type === 'admin')

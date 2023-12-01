@@ -87,6 +87,8 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Main\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
     Route::get('/courses/{course}/enrolled-users', [App\Http\Controllers\Main\CourseController::class, 'enrolledUsers'])->name('courses.enrolled-users');
     Route::get('/courses/generate-pdf', [App\Http\Controllers\Main\CourseController::class, 'generatePDF'])->name('courses.generate-pdf');
+    Route::get('/admin/dashboard', [App\Http\Controllers\Main\CourseController::class, 'dashboards'])->name('admin.dashboard');
+    
     //courses routes
    
    //materials routes
@@ -155,6 +157,8 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
             Route::get('/students','showStudents');
             Route::get('/instructors','showInstructors');
             Route::get('/administrators', 'showAdmins');
+            Route::get('/users/{userType}', 'showUsers');
+
 
       });
     });
