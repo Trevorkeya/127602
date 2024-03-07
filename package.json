@@ -16,6 +16,6 @@
     },
     "dependencies": {
         "bourbon": "^7.3.0",
-        "chart.js": "^4.4.0"
+        "chart.js": "^4.4.1"
     }
 }
